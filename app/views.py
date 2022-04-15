@@ -10,6 +10,7 @@ from flask import render_template, request, jsonify, send_file
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash
 from app.models import Users
+from app.forms import LoginForm
 import os
 
 
@@ -29,55 +30,61 @@ def register():
 @app.route('/api/auth/login', methods=['POST'])
 def login():
     def login():
-    #form = LoginForm()
+        loginform = LoginForm()
         if request.method == "POST":
-            if  form.validate_on_submit():
-                username = form.username.data
-                password = form.password.data
+            if  loginform.validate_on_submit():
+                username = loginform.username.data
+                password = loginform.password.data
                 user = Users.query.filter_by(username=username).first()
                 if user is not None and check_password_hash(user.password, password):
                     login_user(user)
                     #flash('You are now logged in.', 'success')
-                    return ''
+                    return jsonify({
+                            "message": "Login Successful",
+                            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjE4MDI5MjE4LCJleHAiOjE2MTgwMjkyMTh9.PiLE3syBXnEYfKqTiSmEPz1HN0D7jkAI9BjmrfjyGAI"
+                        }),200
                 else:
-                    return ''
-                    #flash('Something went wrong. Check your access info and try again.', 'danger')
+                    return jsonify({
+                            "message": "Login failed, check your information and try again.",
+                        }),401
+                   
         return ''
 
 @app.route('/api/auth/logout', methods=['POST'])
+@login_required
 def logout():
     logout_user()
     return jsonify({
         "message": "Log out successful"
-    })
-###
-# The functions below should be applicable to all Flask apps.
-###
-
-# Here we define a function to collect form errors from Flask-WTF
-# which we can later use
+    }),200
 
 @app.route('/api/cars', methods=['GET', 'POST'])
+@login_required
 def cars():
     return ''
 
 @app.route('/api/cars/{car_id}', methods=['GET'])
+@login_required
 def singlecar(car_id):
     return ''
 
 @app.route('/api/cars/{car_id}/favourite', methods=['POST'])
+@login_required
 def favourite(car_id):
     return ''
 
 @app.route('/api/search', methods=['GET'])
+@login_required
 def singlecar():
     return ''
 
 @app.route('/api/users/{user_id}', methods=['GET'])
+@login_required
 def singlecar(user_id):
     return ''
 
 @app.route('/api/users/{user_id}/favourites', methods=['GET'])
+@login_required
 def singlecar(user_id):
     return ''
 
