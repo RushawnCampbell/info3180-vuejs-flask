@@ -53,40 +53,47 @@ def login():
 @app.route('/api/auth/logout', methods=['POST'])
 @login_required
 def logout():
-    logout_user()
-    return jsonify({
-        "message": "Log out successful"
-    }),200
+    if current_user.is_authenticated:
+        logout_user()
+        return jsonify({
+            "message": "Log out successful"
+        }),200
 
 @app.route('/api/cars', methods=['GET', 'POST'])
 @login_required
 def cars():
-    return ''
+    if current_user.is_authenticated:
+        return ''
 
 @app.route('/api/cars/{car_id}', methods=['GET'])
 @login_required
 def singlecar(car_id):
-    return ''
+    if current_user.is_authenticated:
+        return ''
 
 @app.route('/api/cars/{car_id}/favourite', methods=['POST'])
 @login_required
 def favourite(car_id):
-    return ''
+    if current_user.is_authenticated:
+        return ''
 
 @app.route('/api/search', methods=['GET'])
 @login_required
 def singlecar():
-    return ''
+    if current_user.is_authenticated:
+        return ''
 
 @app.route('/api/users/{user_id}', methods=['GET'])
 @login_required
 def singlecar(user_id):
-    return ''
+    if current_user.is_authenticated:
+        return ''
 
 @app.route('/api/users/{user_id}/favourites', methods=['GET'])
 @login_required
 def singlecar(user_id):
-    return ''
+    if current_user.is_authenticated:
+        return ''
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
