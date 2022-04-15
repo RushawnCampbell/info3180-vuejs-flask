@@ -11,6 +11,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash
 from app.models import Users
 from app.forms import LoginForm
+from flask_wtf.csrf import generate_csrf
 import os
 
 
@@ -29,31 +30,29 @@ def register():
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
-    def login():
-        loginform = LoginForm()
-        if request.method == "POST":
-            if  loginform.validate_on_submit():
-                username = loginform.username.data
-                password = loginform.password.data
-                user = Users.query.filter_by(username=username).first()
-                if user is not None and check_password_hash(user.password, password):
-                    login_user(user)
+    loginform = LoginForm()
+    if request.method == "POST":
+        if  loginform.validate_on_submit():
+            username = loginform.username.data
+            password = loginform.password.data
+            user = Users.query.filter_by(username=username).first()
+            if user is not None and check_password_hash(user.password, password):
+                login_user(user)
                     #flash('You are now logged in.', 'success')
-                    return jsonify({
-                            "message": "Login Successful",
-                            "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjE4MDI5MjE4LCJleHAiOjE2MTgwMjkyMTh9.PiLE3syBXnEYfKqTiSmEPz1HN0D7jkAI9BjmrfjyGAI"
-                        }),200
-                else:
-                    return jsonify({
-                            "message": "Login failed, check your information and try again.",
-                        }),401
+                return jsonify({
+                        "message": "Login Successful",
+                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjE4MDI5MjE4LCJleHAiOjE2MTgwMjkyMTh9.PiLE3syBXnEYfKqTiSmEPz1HN0D7jkAI9BjmrfjyGAI"
+                    }),200
+            else:
+                return jsonify({
+                        "message": "Login failed, check your information and try again.",
+                    }),401
                    
-        return ''
+    return ''
 
 @app.route('/api/auth/logout', methods=['POST'])
 @login_required
 def logout():
-    if current_user.is_authenticated:
         logout_user()
         return jsonify({
             "message": "Log out successful"
@@ -62,44 +61,42 @@ def logout():
 @app.route('/api/cars', methods=['GET', 'POST'])
 @login_required
 def cars():
-    if current_user.is_authenticated:
-        return ''
+    return ''
 
 @app.route('/api/cars/{car_id}', methods=['GET'])
 @login_required
 def singlecar(car_id):
-    if current_user.is_authenticated:
-        return ''
+    return ''
 
 @app.route('/api/cars/{car_id}/favourite', methods=['POST'])
 @login_required
 def favourite(car_id):
-    if current_user.is_authenticated:
-        return ''
+    return ''
 
 @app.route('/api/search', methods=['GET'])
 @login_required
-def singlecar():
-    if current_user.is_authenticated:
-        return ''
+def search():
+    return ''
 
 @app.route('/api/users/{user_id}', methods=['GET'])
 @login_required
-def singlecar(user_id):
-    if current_user.is_authenticated:
-        return ''
+def user(user_id):
+    return ''
 
 @app.route('/api/users/{user_id}/favourites', methods=['GET'])
 @login_required
-def singlecar(user_id):
-    if current_user.is_authenticated:
-        return ''
+def favourites(user_id):
+    return ''
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
     """Send your static text file."""
     file_dot_text = file_name + '.txt'
     return app.send_static_file(file_dot_text)
+
+@app.route('/api/csrf-token', methods=['GET'])
+def get_csrf():
+    return jsonify({'csrf_token': generate_csrf()})
 
 def form_errors(form):
     error_messages = []

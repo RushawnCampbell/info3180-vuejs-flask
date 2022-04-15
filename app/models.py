@@ -14,7 +14,7 @@ class Cars (db.Model):
     year = db.Column(db.String(10))
     transmission = db.Column(db.String(80))
     car_type = db.Column(db.String(255))
-    price = db.Column(db.Decimal)
+    price = db.Column(db.Float)
     photo = db.Column(db.String(80))
     user_id = db.Column(db.Integer)
 
@@ -32,6 +32,8 @@ class Cars (db.Model):
 
 
 class Favourites (db.Model):
+    __tablename__ = 'favouritess'
+
     id = db.Column(db.Integer, primary_key=True)
     car_id =  db.Column(db.Integer)
     user_id = db.Column(db.Integer)
@@ -42,7 +44,7 @@ class Favourites (db.Model):
 
 
 class Users(db.Model):
-    __tablename__ = 'user_profiles'
+    __tablename__ = 'users'
 
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(80), unique=True)
