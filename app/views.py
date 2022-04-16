@@ -47,12 +47,12 @@ def register():
                 userid =  userid = db.session.query(Users.id).all()[-1][0]
                 feedback= {
                         "id": userid,
-                        "username": request.form['username'],
-                        "name": request.form['fullname'],
-                        "photo": request.form['photo'],
-                        "email": request.form['email'],
-                        "location": request.form['location'],
-                        "biography": request.form['biography'],
+                        "username": formobject.username.data,
+                        "name": formobject.fullname.data,
+                        "photo": cleanedname,
+                        "email": formobject.email.data,
+                        "location": formobject.location.data,
+                        "biography": formobject.biography.data,
                         "date_joined": date_joined
                     }
                 return jsonify(feedback)

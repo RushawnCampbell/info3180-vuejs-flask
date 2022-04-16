@@ -2,8 +2,7 @@
     <div class="width">
         <h3>Register New User</h3>
       <div class="text-left card_">
-
-          <!-- Where needs to be added  -->
+        <span id="msg" class=" form-control alert hide" ></span>
         <form @submit.prevent="registerForm" method="POST" id="registerForm" enctype = "multipart/form-data">
             <div class="d-inline-flex w_full ">
                 <div class="mb-3  space_between w_full">
@@ -59,6 +58,7 @@ export default {
             let registerForm = document.getElementById('registerForm');
             let form_data = new FormData(registerForm);
             let self = this;
+            let alertcontainer =  document.querySelector('span#msg');
             fetch('/api/register', {
 
                 method: 'POST',
@@ -73,8 +73,12 @@ export default {
               })
               .then((data)=>{
                   
-                  console.log(data);
-                  return data;
+                console.log(data);
+                alertcontainer.classList.add('alert-success');
+                alertcontainer.classList.remove('alert-danger');
+                alertcontainer.innerHTML= "User Registered Successfully";
+                alertcontainer.classList.add('show');
+
               })
         },
          getCsrfToken() {
@@ -96,6 +100,14 @@ export default {
 </script>
 
 <style>
+
+.hide{
+    display:none;
+}
+
+.show{
+    display: block;
+}
 .width{
   width: 36rem;
   padding-right: 0.75rem;
