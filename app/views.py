@@ -10,9 +10,15 @@ from flask import request, jsonify, send_file
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash
 from app.models import Users
+from app.models import Cars
+from app.models import Favourites
 from app.forms import LoginForm
+from app.forms import RegisterForm
+from app.forms import CarForm
 from flask_wtf.csrf import generate_csrf
+from werkzeug.utils import secure_filename
 import os
+import datetime
 
 
 ###
@@ -26,7 +32,31 @@ def index():
 
 @app.route('/api/register', methods=['POST'])
 def register():
-    return ''
+    
+    if request.method == 'POST':
+        formobject =  RegisterForm()
+        if formobject.validate_on_submit():
+            fileobj = request.files['photo']
+            cleanedname = secure_filename(fileobj.filename)
+            fileobj.save(os.path.join(app.config['UPLOAD_FOLDER'], cleanedname))
+            if fileobj and (cleanedname != "" and cleanedname != " "):
+                date_joined = datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                newuser = Users(formobject.username.data,formobject.password.data, formobject.fullname.data, formobject.email.data,formobject.location.data, formobject.biography.data, cleanedname, date_joined )
+                db.session.add(newuser)
+                db.session.commit()
+                userid =  userid = db.session.query(Users.id).all()[-1][0]
+                feedback= {
+                        "id": userid,
+                        "username": request.form['username'],
+                        "name": request.form['fullname'],
+                        "photo": request.form['photo'],
+                        "email": request.form['email'],
+                        "location": request.form['location'],
+                        "biography": request.form['biography'],
+                        "date_joined": date_joined
+                    }
+                return jsonify(feedback)
+        return jsonify(form_errors(formobject))  
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
@@ -38,15 +68,15 @@ def login():
             user = Users.query.filter_by(username=username).first()
             if user is not None and check_password_hash(user.password, password):
                 login_user(user)
-                    #flash('You are now logged in.', 'success')
+                   
                 return jsonify({
                         "message": "Login Successful",
                         "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjE4MDI5MjE4LCJleHAiOjE2MTgwMjkyMTh9.PiLE3syBXnEYfKqTiSmEPz1HN0D7jkAI9BjmrfjyGAI"
-                    }),200
+                    })
             else:
                 return jsonify({
                         "message": "Login failed, check your information and try again.",
-                    }),401
+                    })
                    
     return ''
 

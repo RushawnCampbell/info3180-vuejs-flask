@@ -8,10 +8,16 @@ class LoginForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
 
-class UploadForm(FlaskForm):
-    fileField = FileField('image upload',validators=[FileRequired(),FileAllowed(['jpg', 'png', 'jpeg'], 'Illegal file detected. You must enter an image')])
+class RegisterForm(FlaskForm):
+    username = StringField('Username', validators=[InputRequired()])
+    password = PasswordField('Password', validators=[InputRequired()])
+    fullname = StringField("Fullname", validators=[DataRequired()])
+    email = EmailField("Email Address", validators=[DataRequired(), Email()])
+    location = StringField("Location", validators=[DataRequired()])
+    biography = TextAreaField("Biography", validators=[DataRequired()], render_kw={"rows": "3"})
+    photo = FileField('image upload',validators=[FileRequired(),FileAllowed(['jpg', 'png', 'jpeg'], 'Illegal file detected. You must enter an image')])
 
-class ContactForm(FlaskForm):
+class CarForm(FlaskForm):
     name = StringField("Please enter your fullname", validators=[DataRequired()])
     email = EmailField("Please enter your e-mail address", validators=[DataRequired(), Email()])
     subject = StringField("Please enter the subject for your message", validators=[DataRequired()])

@@ -5,7 +5,7 @@
       <section id="contentgrouping">
           <h1>Buy And Sell Cars Online</h1>
           <p>United Auto Sales provides the fastest, easiest and most user friendly way to buy or sell cars onine. Find a 
-          Great Price on th Vehicle You Want</p>
+          Great Price on the Vehicle You Want</p>
           <section class="btngrp">
               <button  class="btn btn-primary" > <RouterLink to="/register" class="nav-link ">Register</RouterLink> </button>
               <button  class="btn btn-success" > <RouterLink to="/login" class="nav-link ">Login</RouterLink></button>

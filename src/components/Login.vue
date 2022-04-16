@@ -1,7 +1,7 @@
 <template>
     <section class="formcombo">
     <h2>Login to your account</h2>
-        <form @submit.prevent="login" id="loginForm">
+        <form @submit.prevent="login" Mmethod="POST" id="loginForm">
             <div class="form-group">
                 <label for="username">Username</label><br>
                 <input type="text" class="form-control" id="username"  name="username" >
@@ -25,15 +25,15 @@ export default {
 
         login(){
             let loginForm = document.getElementById('loginForm');
-            let form_data = new FormData(uploadForm);
+            let form_data = new FormData(loginForm);
             let self = this;
             fetch('/api/auth/login', {
 
                 method: 'POST',
                 body: form_data,
                 headers: {
-                    'Accept':application/json,
-                    'Content-Type':application/json
+                    "Accept": "application/json",
+                    "Content-Type": "application/json"
                 }
               })
               .then((response)=>{

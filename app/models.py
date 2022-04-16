@@ -6,7 +6,7 @@ from werkzeug.security import generate_password_hash
 class Cars (db.Model):
     __tablename__ =  'cars'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     description = db.Column(db.String)
     make = db.Column(db.String(255))
     model = db.Column(db.String(255))
@@ -32,9 +32,9 @@ class Cars (db.Model):
 
 
 class Favourites (db.Model):
-    __tablename__ = 'favouritess'
+    __tablename__ = 'favourites'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     car_id =  db.Column(db.Integer)
     user_id = db.Column(db.Integer)
     
@@ -46,7 +46,7 @@ class Favourites (db.Model):
 class Users(db.Model):
     __tablename__ = 'users'
 
-    id = db.Column(db.Integer, primary_key=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     username = db.Column(db.String(80), unique=True)
     password = db.Column(db.String(255), unique=True)
     name = db.Column(db.String(255))
