@@ -48,7 +48,7 @@ export default {
 div#carsparent{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-row-gap: 1em;
+    grid-column-gap: 2em;
     width: 100%;
     margin-top: 2em;
     justify-content: center;
