@@ -1,7 +1,5 @@
 <template>
 
-<section id="exploreparent">
-<h3>Explore</h3>
 <div id="carsparent">
     <div v-for= "car in cars" class="card">
         <img class="card-img-top" v-bind:src= car.photo v-bind:alt=car.car_type>
@@ -13,8 +11,6 @@
     </div>
 </div>
 
-</section>
-
 </template>
 
 <script>
@@ -25,49 +21,7 @@ export default {
             searchTerm: ''
         };
     },
-    methods: {
-
-        searchCar(){
-            let registerForm = document.getElementById('registerForm');
-            let form_data = new FormData(registerForm);
-            let self = this;
-            let alertcontainer =  document.querySelector('span#msg');
-            fetch('/api/register', {
-
-                method: 'GET',
-                body: form_data,
-                headers: {
-                    "Accept": "application/json",
-                    'X-CSRFToken': this.csrf_token
-                }
-              })
-              .then((response)=>{
-                  return response.json();
-              })
-              .then((data)=>{
-                  
-                console.log(data);
-                alertcontainer.classList.add('alert-success');
-                alertcontainer.classList.remove('alert-danger');
-                alertcontainer.innerHTML= "User Registered Successfully";
-                alertcontainer.classList.add('show');
-
-              })
-        },
-         getCsrfToken() {
-                let self = this;
-                fetch('/api/csrf-token')
-                .then((response) => response.json())
-                .then((data) => {
-                    console.log(data);
-                    self.csrf_token = data.csrf_token;
-                })
-            
-        },
-    
-    },
     created() {
-        this.getCsrfToken();
         let self = this;
         fetch('/api/cars',
         {
@@ -90,12 +44,7 @@ export default {
 
 <style>
 
-section#exploreparent{
-    width: 75%;
-    display: flex;
-    flex-flow: column wrap;
-    margin: auto;
-}
+
 div#carsparent{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
@@ -140,10 +89,6 @@ button{
     border-radius: .5em;
     width: 100%;
     margin-top: 2rem;
-}
-
-h3{
-    font-weight: bold;
 }
 
 </style>
