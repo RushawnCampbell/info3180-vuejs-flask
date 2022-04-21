@@ -99,7 +99,6 @@ export default {
               })
               .then((data)=>{
                   
-                console.log(data);
                 if (stat == 200){
                         alertcontainer.classList.add('alert-success');
                         alertcontainer.classList.remove('alert-danger');

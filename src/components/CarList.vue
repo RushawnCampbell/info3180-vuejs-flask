@@ -1,5 +1,15 @@
 <template>
-    <h2>Hello</h2>
+
+<div id="carsparent">
+    <div v-for= "car in cars" class="card" style="width: 18rem;">
+        <img class="card-img-top" v-bind:src= car.photo v-bind:alt=car.car_type>
+        <div class="card-body">
+            <h5 class="card-title">{{ car.id }}</h5>
+            <p class="card-text">{{car.description}}</p>
+        </div>
+    </div>
+</div>
+
 </template>
 
 <script>
@@ -66,15 +76,24 @@ export default {
             return response.json();
         })
         .then(function(data) {
-            console.log(data.message);
-            console.log(sessionStorage.getItem('token'));
-            self.cars = data.cars;
+            console.log(data);
+            self.cars = data;
         });
     },
 };
 </script>
 
 <style>
-
+div#carsparent{
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    grid-row-gap: 2em;
+    width: 100%;
+    margin-top: 2em;
+    justify-content: space-evenly;
+    justify-items: center;
+    align-content: space-evenly;
+    align-items: center;
+}
 
 </style>

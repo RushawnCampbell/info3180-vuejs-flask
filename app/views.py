@@ -106,9 +106,8 @@ def cars():
             if request.method == "GET":
                 cars = []
                 returnedcars = Cars.query.all()
-                print("HERE THEY ARE",returnedcars)
                 for car in returnedcars:
-                    cars.push({
+                    cars.append({
                         "id": car.id,
                         "description": car.description,
                         "year": car.year,
@@ -118,11 +117,10 @@ def cars():
                         "transmission": car.transmission,
                         "car_type": car.car_type,
                         "price": car.price,
-                        "photo": car.photo,
+                        "photo": os.path.join(app.config['UPLOAD_FOLDER'], car.photo),
                         "user_id": current_user.id
                     })
                 cars = [cars[-3], cars[-2], cars[-1]]
-                print(cars)
                 return jsonify(cars),200
             elif request.method == "POST":
                 formobject =  CarForm()
