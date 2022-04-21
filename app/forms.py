@@ -1,6 +1,6 @@
 from flask_wtf import FlaskForm
 from flask_wtf.file import FileField, FileAllowed, FileRequired
-from wtforms import StringField, TextAreaField, EmailField, PasswordField
+from wtforms import StringField, TextAreaField, EmailField, PasswordField, SelectField
 from wtforms.validators import DataRequired, Email, InputRequired
 
 
@@ -18,10 +18,15 @@ class RegisterForm(FlaskForm):
     photo = FileField('image upload',validators=[FileRequired(),FileAllowed(['jpg', 'png', 'jpeg'], 'Illegal file detected. You must enter an image')])
 
 class CarForm(FlaskForm):
-    name = StringField("Please enter your fullname", validators=[DataRequired()])
-    email = EmailField("Please enter your e-mail address", validators=[DataRequired(), Email()])
-    subject = StringField("Please enter the subject for your message", validators=[DataRequired()])
-    message = TextAreaField("Please enter the message you would like to send", validators=[DataRequired()], render_kw={"rows": "3"})
+    make = StringField('Make', validators=[InputRequired()])
+    model = StringField('Model', validators=[InputRequired()])
+    colour = StringField("Colour", validators=[DataRequired()])
+    year = StringField("Year", validators=[DataRequired()])
+    price = StringField("Price", validators=[DataRequired()])
+    car_type = SelectField(label='Car Type', choices = [('Hatchback','hatchback'),('Sedan','sedan'), ('SUV','suv'), ('MUV','muv'), ('Coupe','coupe'), ('Convertible','convertible'), ('Pickup Truck','pickuptruck') ])
+    transmission = SelectField(label='Transmission', choices=[('Automatic', 'automatic'), ('Manual', 'manual')])
+    description = TextAreaField("Description", validators=[DataRequired()], render_kw={"rows": "3"})
+    photo = FileField('image upload',validators=[FileRequired(),FileAllowed(['jpg', 'png', 'jpeg'], 'Illegal file detected. You must enter an image')])
 
 
        

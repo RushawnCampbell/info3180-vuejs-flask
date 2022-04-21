@@ -19,7 +19,7 @@ export default {
             let alertcontainer =  document.querySelector('span#msg');
             fetch('/api/register', {
 
-                method: 'POST',
+                method: 'GET',
                 body: form_data,
                 headers: {
                     "Accept": "application/json",
@@ -56,6 +56,7 @@ export default {
         let self = this;
         fetch('/api/cars',
         {
+            method: 'GET',
             headers: {
                 'Accept': 'application/json',
                 'Authorization': `Bearer ${sessionStorage.getItem('token')}`

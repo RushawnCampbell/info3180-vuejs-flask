@@ -6,7 +6,7 @@ This file creates your application.
 """
 
 from app import app, db, login_manager
-from flask import request, session,jsonify, send_file
+from flask import request, jsonify, send_file
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash
 from app.models import Users
@@ -18,7 +18,6 @@ from app.forms import CarForm
 from flask_wtf.csrf import generate_csrf
 from werkzeug.utils import secure_filename
 import os
-import json
 import datetime 
 import jwt
 
@@ -57,8 +56,8 @@ def register():
                         "biography": formobject.biography.data,
                         "date_joined": date_joined
                     }
-                return jsonify(feedback),201
-        return jsonify(form_errors(formobject))  
+                return jsonify(feedback),200
+        return jsonify(form_errors(formobject)),401  
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
@@ -104,29 +103,54 @@ def cars():
     try:
         decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
         if decoded['sub'] == current_user.username:
-            cars = []
-            returnedcars = Cars.query.all()
-            for car in returnedcars:
-                cars.push({
-                    "id": car.id,
-                    "description": car.description,
-                    "year": car.year,
-                    "make": car.make,
-                    "model": car.model,
-                    "colour": car.colour,
-                    "transmission": car.transmission,
-                    "car_type": car.car_type,
-                    "price": car.price,
-                    "photo": car.photo,
-                    "user_id": car.user_id
-                })
-            cars = [cars[-3], cars[-2], cars[-1]]
-            print(cars)
-            #cars.push(db.session.filter.all()[-2])
-            #cars.push(db.session.filter.all()[-1])
-            return jsonify({'message': 'Hello'})
+            if request.method == "GET":
+                cars = []
+                returnedcars = Cars.query.all()
+                print("HERE THEY ARE",returnedcars)
+                for car in returnedcars:
+                    cars.push({
+                        "id": car.id,
+                        "description": car.description,
+                        "year": car.year,
+                        "make": car.make,
+                        "model": car.model,
+                        "colour": car.colour,
+                        "transmission": car.transmission,
+                        "car_type": car.car_type,
+                        "price": car.price,
+                        "photo": car.photo,
+                        "user_id": current_user.id
+                    })
+                cars = [cars[-3], cars[-2], cars[-1]]
+                print(cars)
+                return jsonify(cars),200
+            elif request.method == "POST":
+                formobject =  CarForm()
+                if formobject.validate_on_submit():
+                    fileobj = request.files['photo']
+                    cleanedname = secure_filename(fileobj.filename)
+                    fileobj.save(os.path.join(app.config['UPLOAD_FOLDER'], cleanedname))
+                    if fileobj and (cleanedname != "" and cleanedname != " "):
+                        newcar = Cars(formobject.description.data, formobject.make.data, formobject.model.data,formobject.colour.data, formobject.year.data, formobject.transmission.data, formobject.car_type.data, formobject.price.data, cleanedname, current_user.id )
+                        db.session.add(newcar)
+                        db.session.commit()
+                        feedback = {
+                            "description": formobject.description.data,
+                            "year": formobject.year.data,
+                            "make": formobject.make.data,
+                            "model": formobject.model.data,
+                            "colour": formobject.colour.data,
+                            "transmission": formobject.transmission.data,
+                            "type": formobject.car_type.data,
+                            "price": formobject.price.data,
+                            "photo": cleanedname,
+                            "user_id": current_user.id
+                        }
+                        return jsonify(feedback),200
+                return jsonify(form_errors(formobject)),401 
+                        
     except:
-        return jsonify({'message': 'Invalid token provided'})
+        return jsonify({'message': 'Invalid token provided'}),401
 
 @app.route('/api/cars/{car_id}', methods=['GET'])
 @login_required
