@@ -1,14 +1,19 @@
 <template>
 
+<section id="exploreparent">
+<h3>Explore</h3>
 <div id="carsparent">
-    <div v-for= "car in cars" class="card" style="width: 18rem;">
+    <div v-for= "car in cars" class="card">
         <img class="card-img-top" v-bind:src= car.photo v-bind:alt=car.car_type>
         <div class="card-body">
-            <h5 class="card-title">{{ car.id }}</h5>
-            <p class="card-text">{{car.description}}</p>
+            <section class="card-title"> <span>{{ car.year }} {{car.make}}</span> <span id="pricespan"><img src="../assets/price-tag.png" /> {{car.price}}</span></section>
+            <p class="card-text">{{car.model}}</p>
+            <button  class=" btn-primary" > <RouterLink :to="{path: '/cars/'+ car.id}" class="nav-link ">view more details</RouterLink> </button>
         </div>
     </div>
 </div>
+
+</section>
 
 </template>
 
@@ -84,16 +89,61 @@ export default {
 </script>
 
 <style>
+
+section#exploreparent{
+    width: 75%;
+    display: flex;
+    flex-flow: column wrap;
+    margin: auto;
+}
 div#carsparent{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    grid-row-gap: 2em;
+    grid-row-gap: 1em;
     width: 100%;
     margin-top: 2em;
-    justify-content: space-evenly;
+    justify-content: center;
     justify-items: center;
-    align-content: space-evenly;
+    align-content: center;
     align-items: center;
+}
+
+div.card{
+    width: 100%;
+}
+
+section.card-title{
+    display: flex;
+    flex-flow: row wrap;
+}
+
+span#pricespan{
+    background: #41B883;
+    color: #fff;
+    margin-left: 1em;
+    width: fit-content;
+    padding: 0.05em 0.3em 0.05em 0.3em;
+    border-radius: 0.5em;
+}
+
+span#pricespan img{
+    width: 1em;
+}
+button a{
+  color: #fff !important;
+  padding:0;
+  margin: 0;
+}
+
+button{
+    padding:.05em;
+    border-radius: .5em;
+    width: 100%;
+    margin-top: 2rem;
+}
+
+h3{
+    font-weight: bold;
 }
 
 </style>

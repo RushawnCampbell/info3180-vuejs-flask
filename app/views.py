@@ -120,7 +120,9 @@ def cars():
                         "photo": os.path.join(app.config['UPLOAD_FOLDER'], car.photo),
                         "user_id": current_user.id
                     })
-                cars = [cars[-3], cars[-2], cars[-1]]
+                if len(cars) >=  3:
+                    cars = [cars[-3], cars[-2], cars[-1]]
+            
                 return jsonify(cars),200
             elif request.method == "POST":
                 formobject =  CarForm()

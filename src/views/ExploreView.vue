@@ -9,7 +9,6 @@ export default {
 </script>
 
 <template>
-<h2>Explore</h2>
     <CarList/>
 </template>
 
