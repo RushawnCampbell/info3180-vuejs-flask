@@ -6,7 +6,7 @@ This file creates your application.
 """
 
 from app import app, db, login_manager
-from flask import request, jsonify, send_file
+from flask import request, session,jsonify, send_file
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash
 from app.models import Users
@@ -18,7 +18,9 @@ from app.forms import CarForm
 from flask_wtf.csrf import generate_csrf
 from werkzeug.utils import secure_filename
 import os
-import datetime
+import json
+import datetime 
+import jwt
 
 
 ###
@@ -55,7 +57,7 @@ def register():
                         "biography": formobject.biography.data,
                         "date_joined": date_joined
                     }
-                return jsonify(feedback)
+                return jsonify(feedback),201
         return jsonify(form_errors(formobject))  
 
 @app.route('/api/auth/login', methods=['POST'])
@@ -68,15 +70,16 @@ def login():
             user = Users.query.filter_by(username=username).first()
             if user is not None and check_password_hash(user.password, password):
                 login_user(user)
-                   
+                tokencreationtime = datetime.datetime.utcnow().strftime("%H:%M:%S")
+                token  = jwt.encode({'sub':username,'initime': tokencreationtime}, app.config.get('SECRET_KEY'),algorithm='HS256')
                 return jsonify({
                         "message": "Login Successful",
-                        "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNjE4MDI5MjE4LCJleHAiOjE2MTgwMjkyMTh9.PiLE3syBXnEYfKqTiSmEPz1HN0D7jkAI9BjmrfjyGAI"
-                    })
+                        "token": token
+                    }),200
             else:
                 return jsonify({
                         "message": "Login failed, check your information and try again.",
-                    })
+                    }),401
                    
     return ''
 
@@ -88,10 +91,42 @@ def logout():
             "message": "Log out successful"
         }),200
 
+@login_manager.user_loader
+def load_user(id):
+    return Users.query.get(int(id))
+
 @app.route('/api/cars', methods=['GET', 'POST'])
 @login_required
 def cars():
-    return ''
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({'message': 'No token provided, this request is illegal.'})
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'] == current_user.username:
+            cars = []
+            returnedcars = Cars.query.all()
+            for car in returnedcars:
+                cars.push({
+                    "id": car.id,
+                    "description": car.description,
+                    "year": car.year,
+                    "make": car.make,
+                    "model": car.model,
+                    "colour": car.colour,
+                    "transmission": car.transmission,
+                    "car_type": car.car_type,
+                    "price": car.price,
+                    "photo": car.photo,
+                    "user_id": car.user_id
+                })
+            cars = [cars[-3], cars[-2], cars[-1]]
+            print(cars)
+            #cars.push(db.session.filter.all()[-2])
+            #cars.push(db.session.filter.all()[-1])
+            return jsonify({'message': 'Hello'})
+    except:
+        return jsonify({'message': 'Invalid token provided'})
 
 @app.route('/api/cars/{car_id}', methods=['GET'])
 @login_required
@@ -127,6 +162,7 @@ def send_text_file(file_name):
 @app.route('/api/csrf-token', methods=['GET'])
 def get_csrf():
     return jsonify({'csrf_token': generate_csrf()})
+
 
 def form_errors(form):
     error_messages = []

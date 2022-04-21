@@ -27,20 +27,26 @@ export default {
             let loginForm = document.getElementById('loginForm');
             let form_data = new FormData(loginForm);
             let self = this;
+            let stat = 0;
             fetch('/api/auth/login', {
 
                 method: 'POST',
                 body: form_data,
                 headers: {
                     "Accept": "application/json",
-                    "Content-Type": "application/json"
+                    'X-CSRFToken': this.csrf_token
                 }
               })
               .then((response)=>{
-                  return response
+                  stat = response.status;
+                  return response.json();
               })
               .then((data)=>{
-                  return data
+                  
+                  if (stat == 200){
+                      sessionStorage.setItem('token', data.token);
+                      this.$router.push('/explore');
+                  }
               })
         },
          getCsrfToken() {

@@ -33,10 +33,7 @@ export default {
     },
     methods : {
 
-      pointer(){
-        
 
-      }
     }
 }
 </script>
