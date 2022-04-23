@@ -15,11 +15,15 @@ from app.models import Favourites
 from app.forms import LoginForm
 from app.forms import RegisterForm
 from app.forms import CarForm
+from app.forms import SearchForm
 from flask_wtf.csrf import generate_csrf
 from werkzeug.utils import secure_filename
 import os
 import datetime 
 import jwt
+import locale
+import json
+locale.setlocale( locale.LC_ALL, 'en_CA.UTF-8' )
 
 
 ###
@@ -116,13 +120,12 @@ def cars():
                         "colour": car.colour,
                         "transmission": car.transmission,
                         "car_type": car.car_type,
-                        "price": car.price,
+                        "price": locale.currency(car.price, grouping= True),
                         "photo": os.path.join(app.config['UPLOAD_FOLDER'], car.photo),
                         "user_id": current_user.id
                     })
                 if len(cars) >=  3:
                     cars = [cars[-3], cars[-2], cars[-1]]
-            
                 return jsonify(cars),200
             elif request.method == "POST":
                 formobject =  CarForm()
@@ -152,19 +155,111 @@ def cars():
     except:
         return jsonify({'message': 'Invalid token provided'}),401
 
-@app.route('/api/cars/{car_id}', methods=['GET'])
+@app.route('/api/cars/<int:car_id>', methods=['GET'])
 @login_required
 def singlecar(car_id):
-    return ''
 
-@app.route('/api/cars/{car_id}/favourite', methods=['POST'])
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({'message': 'No token provided, this request is illegal.'})
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'] == current_user.username:
+            if request.method == 'GET':
+                returnedcar = Cars.query.filter_by(id=car_id).first()
+                car = {
+                    "id": returnedcar.id,
+                    "description": returnedcar.description,
+                    "year": returnedcar.year,
+                    "make": returnedcar.make,
+                    "model": returnedcar.model,
+                    "colour": returnedcar.colour,
+                    "transmission": returnedcar.transmission,
+                    "car_type": returnedcar.car_type,
+                    "price": locale.currency(returnedcar.price, grouping= True),
+                    "photo": os.path.join(app.config['UPLOAD_FOLDER'], returnedcar.photo)[1:],
+                    "user_id": returnedcar.user_id
+                }
+            return jsonify(car)
+    except:
+        return jsonify({'message': 'Invalid token provided'}),401
+
+@app.route('/api/cars/<int:car_id>/favourite', methods=["POST"])
 @login_required
 def favourite(car_id):
-    return ''
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({'message': 'No token provided, this request is illegal.'})
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'] == current_user.username:
+            if request.method == "POST":
+                car = json.loads(request.data)
+                print("HERE", car['car_id'])
+                favorite = Favourites(car['car_id'], car['user_id'])
+                db.session.add(favorite)
+                db.session.commit()
+                feedback = {
+                    "message": "Car Successfully Favourited",
+                    "car_id": car['car_id']
+                }
+                return jsonify(feedback),200
+    except:
+        return jsonify({'message': 'Invalid token provided'}),401
 
 @app.route('/api/search', methods=['GET'])
 @login_required
 def search():
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({'message': 'No token provided, this request is illegal.'})
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'] == current_user.username:
+            if request.method == 'GET':
+                params = request.args
+                makedata = params.get('searchmake')
+                modeldata = params.get('searchmodel')
+                cars= []
+                if makedata != '' and modeldata !='':
+                    searchedcars = Cars.query.filter_by(make = makedata).all()
+                    print("SERACHED1", searchedcars)
+    
+                if makedata != '' and modeldata == '':
+                    searchedcars = Cars.query.filter_by(make = makedata).all()
+                    print("SERACHED2", searchedcars)
+
+                if makedata == '' and modeldata != '':
+                    searchedcars = Cars.query.filter_by(model = modeldata).all()
+                    print("SERACHED3", searchedcars)
+                
+                if makedata == '' and modeldata =='':
+                    searchedcars = Cars.query.all
+                
+                for car in searchedcars:
+
+                    if car in cars:
+                        continue
+                    cars.append(
+                        {
+                            "id": car.id,
+                            "description": car.description,
+                            "year": car.year,
+                            "make": car.make,
+                            "model": car.model,
+                            "colour": car.colour,
+                            "transmission": car.transmission,
+                            "car_type": car.car_type,
+                            "price": locale.currency(car.price, grouping= True),
+                            "photo": os.path.join(app.config['UPLOAD_FOLDER'], car.photo),
+                            "user_id": 1
+                        }
+
+                    )
+                return jsonify(cars),200
+    except:
+        return jsonify({'message': 'Invalid token provided'}),401
+
     return ''
 
 @app.route('/api/users/{user_id}', methods=['GET'])

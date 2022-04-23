@@ -1,31 +1,17 @@
 <script>
-import CarList from "../components/CarList.vue";
-import Search from "../components/Search.vue";
+import Explore from "../components/Explore.vue";
+
+
 export default {
     data() {
       return[]; 
     },
-    components: {Search, CarList}        
+    components: {Explore}        
 };
 </script>
 
 <template>
-<section id="exploreparent">
-<h3>Explore</h3>
-<Search/>
-<CarList/>
-</section>
-    
+<Explore/>   
 </template>
 
-<style>
-h3{
-    font-weight: bold;
-}
-section#exploreparent{
-    width: 70%;
-    display: flex;
-    flex-flow: column wrap;
-    margin: auto;
-}
-</style>
+<style> </style>

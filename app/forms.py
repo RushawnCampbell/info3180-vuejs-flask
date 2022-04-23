@@ -28,5 +28,6 @@ class CarForm(FlaskForm):
     description = TextAreaField("Description", validators=[DataRequired()], render_kw={"rows": "3"})
     photo = FileField('image upload',validators=[FileRequired(),FileAllowed(['jpg', 'png', 'jpeg'], 'Illegal file detected. You must enter an image')])
 
-
-       
+class SearchForm(FlaskForm):
+    make = StringField('Make', validators=[InputRequired()])
+    model = StringField('Model', validators=[InputRequired()])
