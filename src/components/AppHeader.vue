@@ -24,6 +24,18 @@
               <RouterLink class="nav-link" to="/about">About</RouterLink>
             </li>
 
+            <li class="nav-item" v-if="isauth=='true'">
+              <RouterLink class="nav-link" to="/cars/new">Add Car</RouterLink>
+            </li>
+
+            <li class="nav-item" v-if="isauth=='true'">
+              <RouterLink class="nav-link" to="/explore">Explore</RouterLink>
+            </li>
+
+            <li v-if="isauth=='true'" class="nav-item">
+              <RouterLink class="nav-link" :to="{path: '/users/'+ uid}" >My Profile</RouterLink>
+            </li>
+
           <li id="logout" v-if="isauth=='true'" class="nav-item">
             <RouterLink class="nav-link" to="/logout">Logout</RouterLink>
           </li>
@@ -45,7 +57,8 @@ import { RouterLink } from "vue-router";
 export default {
     data() {
         return {
-          isauth: sessionStorage.getItem('isauth')
+          isauth: sessionStorage.getItem('isauth'),
+          uid: sessionStorage.getItem('uid')
         };
     },
     created(){
