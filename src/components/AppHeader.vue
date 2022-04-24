@@ -24,7 +24,7 @@
               <RouterLink class="nav-link" to="/about">About</RouterLink>
             </li>
 
-          <li id="logout" v-if="isauth" class="nav-item">
+          <li id="logout" v-if="isauth=='true'" class="nav-item">
             <RouterLink class="nav-link" to="/logout">Logout</RouterLink>
           </li>
           <li id="login" v-else>
@@ -45,11 +45,11 @@ import { RouterLink } from "vue-router";
 export default {
     data() {
         return {
-          isauth: eval(sessionStorage.getItem('isauth'))
+          isauth: sessionStorage.getItem('isauth')
         };
     },
     created(){
-         sessionStorage.setItem('isauth', eval(sessionStorage.getItem('isauth')))
+         sessionStorage.setItem('isauth', sessionStorage.getItem('isauth'))
     }
 }
 </script>

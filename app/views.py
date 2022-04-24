@@ -83,7 +83,6 @@ def login():
                         "message": "Login failed, check your information and try again.",
                     }),401
                    
-    return ''
 
 @app.route('/api/auth/logout', methods=['GET'])
 @login_required

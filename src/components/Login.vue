@@ -45,7 +45,7 @@ export default {
                   
                   if (stat == 200){
                       sessionStorage.setItem('token', data.token);
-                      sessionStorage.setItem('isauth', true);
+                      sessionStorage.setItem('isauth', 'true');
                       fetch('/api/uid', {
                         method: 'GET',
                         headers: {
