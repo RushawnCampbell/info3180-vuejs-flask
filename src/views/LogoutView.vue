@@ -1,0 +1,60 @@
+<template>
+</template>
+<script>
+
+export default {
+    data() {
+        return {
+        };
+    },
+    methods:{
+
+        logout(){
+            fetch('/api/auth/logout', {
+            method: 'GET',
+            headers: {
+                "Accept": "application/json",
+                'X-CSRFToken': this.csrf_token,
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            }
+            })
+            .then((response)=>{
+                return response.json();
+            })
+            .then((data)=>{
+                const logoutbtn=  document.querySelector('li#logout');
+                sessionStorage.setItem("isauth", false);
+                sessionStorage.clear();
+                logoutbtn.classList.remove('show');
+                logoutbtn.classList.add('hide');
+                this.$router.push('/');
+
+            })
+
+        },
+        getCsrfToken() {
+                let self = this;
+                fetch('/api/csrf-token')
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log(data);
+                    self.csrf_token = data.csrf_token;
+                })
+            
+        }
+    },
+    created(){
+        this.getCsrfToken();
+        this.logout();
+    }
+};
+</script>
+<style>
+.hide{
+    display: none;
+}
+
+.show{
+    display: block;
+}
+</style>

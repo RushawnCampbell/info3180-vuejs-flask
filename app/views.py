@@ -85,13 +85,14 @@ def login():
                    
     return ''
 
-@app.route('/api/auth/logout', methods=['POST'])
+@app.route('/api/auth/logout', methods=['GET'])
 @login_required
 def logout():
-        logout_user()
-        return jsonify({
-            "message": "Log out successful"
-        }),200
+        if request.method == 'GET':
+            logout_user()
+            return jsonify({
+                "message": "Log out successful"
+            }),200
 
 @login_manager.user_loader
 def load_user(id):
@@ -348,6 +349,27 @@ def uid():
     except:
         return jsonify({"message": "Access token is missing or invalid"}),401 
 
+@app.route('/api/checkfavourite/<int:car_id>', methods= ['GET'])
+@login_required
+def checkfavourite(car_id):
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'] == current_user.username:
+            if request.method == "GET":
+                favourited= False
+                current_favorites = Favourites.query.all()
+                for fave in current_favorites:
+                    if fave.user_id == current_user.id  and fave.car_id == car_id:
+                        favourited = True
+                if favourited:
+                    return jsonify({"message": True}),200
+                else:
+                    return jsonify({"message": False}),200
+    except:
+        return jsonify({"message": False}),401
 
 def form_errors(form):
     error_messages = []

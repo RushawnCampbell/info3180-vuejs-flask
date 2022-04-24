@@ -18,7 +18,7 @@
 
         <section  id="interact" class="inforow">
         <button type="submit" class="btn_ btn-success" >Email Owner</button>
-        <button id="likebtn" type="submit" v-on:click="addfave" class="btn_ btn-success" ><img id="like" src="../assets/like.svg"></button>
+        <button id="likebtn" type="submit" v-on:click="addfave" class="btn_ btn-success" ><img class="unfavourited" src="../assets/like.svg"></button>
         </section>
         
     </section>
@@ -28,13 +28,15 @@
 export default {
     data() {
         return {
-            car: {}
+            car: {},
+            favourited: false,
         };
     },
     methods: {
 
         addfave(){
             let self = this;
+            let stat = 0;
             fetch(`/api/cars/${this.$route.params.car_id}`,
             {
                 method: 'GET',
@@ -65,10 +67,20 @@ export default {
                 }
             })
             .then(function(response) {
+                stat = response.status
                 return response.json();
             })
             .then(function(data) {
                 console.log(data);
+                const likeimage =  document.querySelector("button#likebtn img");
+                if (stat == 200){
+                    likeimage.classList.remove("unfavourited");
+                    likeimage.classList.add("favourited");
+                }
+                else{
+                    likeimage.classList.remove("favourited");
+                    likeimage.classList.add("unfavourited");
+                }
             });
         },
 
@@ -87,7 +99,26 @@ export default {
     created() {
         this.getCsrfToken();
         let self = this;
+        let stat = 0;
+       
         fetch(`/api/cars/${this.$route.params.car_id}`,
+        {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+            }
+        })
+        .then(function(response) {
+            stat = response.status;
+            return response.json();
+        })
+        .then(function(data) {
+            console.log(data);
+            self.car = data;
+        });
+
+        fetch(`/api/checkfavourite/${this.$route.params.car_id}`,
         {
             method: 'GET',
             headers: {
@@ -100,8 +131,18 @@ export default {
         })
         .then(function(data) {
             console.log(data);
-            self.car = data;
+            self.favourited = data.message;
+            const likeimage =  document.querySelector("button#likebtn img");
+            if(self.favourited){
+                likeimage.classList.remove("unfavourited");
+                likeimage.classList.add("favourited");
+            }
+            else{
+                likeimage.classList.remove("favourited");
+                likeimage.classList.add("unfavourited");
+            }
         });
+
 
         
     },
@@ -156,10 +197,16 @@ button#likebtn{
     background: none;
 }
 
-button#likebtn img{
+.favourited{
+    filter: grayscale(0%);
+    width: 2em;
+}
+
+.unfavourited{
     filter: grayscale(100%);
     width: 2em;
 }
+
 section.inforow div label{
     margin-right: 2em;
 }

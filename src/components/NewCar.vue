@@ -72,7 +72,7 @@
 export default {
     data() {
         return {
-            message: ''
+            csrf_token : '',
         };
     },
     methods: {

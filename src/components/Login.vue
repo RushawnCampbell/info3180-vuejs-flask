@@ -18,7 +18,7 @@
 export default {
     data() {
         return {
-            message: ''
+            message: 'login'
         };
     },
     methods: {
@@ -45,6 +45,7 @@ export default {
                   
                   if (stat == 200){
                       sessionStorage.setItem('token', data.token);
+                      sessionStorage.setItem('isauth', true);
                       fetch('/api/uid', {
                         method: 'GET',
                         headers: {
@@ -62,7 +63,7 @@ export default {
                   }
               })
         },
-         getCsrfToken() {
+        getCsrfToken() {
                 let self = this;
                 fetch('/api/csrf-token')
                 .then((response) => response.json())
