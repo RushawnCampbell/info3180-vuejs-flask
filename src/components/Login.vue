@@ -45,6 +45,20 @@ export default {
                   
                   if (stat == 200){
                       sessionStorage.setItem('token', data.token);
+                      fetch('/api/uid', {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+                        }
+                        })
+                        .then(function(response) {
+                            return response.json();
+                        })
+                        .then(function(data) {
+                            sessionStorage.setItem('uid', data.message);
+                            alert(sessionStorage.getItem('uid'))
+                        });
                       this.$router.push('/explore');
                   }
               })

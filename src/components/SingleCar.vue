@@ -34,7 +34,6 @@ export default {
     methods: {
 
         addfave(){
-
             let self = this;
             fetch(`/api/cars/${this.$route.params.car_id}`,
             {

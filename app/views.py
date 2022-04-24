@@ -15,7 +15,6 @@ from app.models import Favourites
 from app.forms import LoginForm
 from app.forms import RegisterForm
 from app.forms import CarForm
-from app.forms import SearchForm
 from flask_wtf.csrf import generate_csrf
 from werkzeug.utils import secure_filename
 import os
@@ -103,7 +102,7 @@ def load_user(id):
 def cars():
     user_token= request.headers['Authorization'].split(' ')[1]
     if not user_token:
-        return jsonify({'message': 'No token provided, this request is illegal.'})
+        return jsonify({"message": "Access token is missing or invalid"}),401
     try:
         decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
         if decoded['sub'] == current_user.username:
@@ -153,7 +152,7 @@ def cars():
                 return jsonify(form_errors(formobject)),401 
                         
     except:
-        return jsonify({'message': 'Invalid token provided'}),401
+        return jsonify({"message": "Access token is missing or invalid"}),401
 
 @app.route('/api/cars/<int:car_id>', methods=['GET'])
 @login_required
@@ -161,7 +160,7 @@ def singlecar(car_id):
 
     user_token= request.headers['Authorization'].split(' ')[1]
     if not user_token:
-        return jsonify({'message': 'No token provided, this request is illegal.'})
+        return jsonify({"message": "Access token is missing or invalid"}),401
     try:
         decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
         if decoded['sub'] == current_user.username:
@@ -180,22 +179,21 @@ def singlecar(car_id):
                     "photo": os.path.join(app.config['UPLOAD_FOLDER'], returnedcar.photo)[1:],
                     "user_id": returnedcar.user_id
                 }
-            return jsonify(car)
+            return jsonify(car),200
     except:
-        return jsonify({'message': 'Invalid token provided'}),401
+        return jsonify({"message": "Access token is missing or invalid"}),401
 
 @app.route('/api/cars/<int:car_id>/favourite', methods=["POST"])
 @login_required
 def favourite(car_id):
     user_token= request.headers['Authorization'].split(' ')[1]
     if not user_token:
-        return jsonify({'message': 'No token provided, this request is illegal.'})
+        return jsonify({"message": "Access token is missing or invalid"}),401
     try:
         decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
         if decoded['sub'] == current_user.username:
             if request.method == "POST":
                 car = json.loads(request.data)
-                print("HERE", car['car_id'])
                 favorite = Favourites(car['car_id'], car['user_id'])
                 db.session.add(favorite)
                 db.session.commit()
@@ -205,14 +203,14 @@ def favourite(car_id):
                 }
                 return jsonify(feedback),200
     except:
-        return jsonify({'message': 'Invalid token provided'}),401
+        return jsonify({"message": "Access token is missing or invalid"}),401
 
 @app.route('/api/search', methods=['GET'])
 @login_required
 def search():
     user_token= request.headers['Authorization'].split(' ')[1]
     if not user_token:
-        return jsonify({'message': 'No token provided, this request is illegal.'})
+        return jsonify({"message": "Access token is missing or invalid"}),401
     try:
         decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
         if decoded['sub'] == current_user.username:
@@ -223,18 +221,15 @@ def search():
                 cars= []
                 if makedata != '' and modeldata !='':
                     searchedcars = Cars.query.filter_by(make = makedata).all()
-                    print("SERACHED1", searchedcars)
-    
+                    
                 if makedata != '' and modeldata == '':
                     searchedcars = Cars.query.filter_by(make = makedata).all()
-                    print("SERACHED2", searchedcars)
 
                 if makedata == '' and modeldata != '':
                     searchedcars = Cars.query.filter_by(model = modeldata).all()
-                    print("SERACHED3", searchedcars)
                 
                 if makedata == '' and modeldata =='':
-                    searchedcars = Cars.query.all
+                    searchedcars = Cars.query.all()
                 
                 for car in searchedcars:
 
@@ -252,25 +247,76 @@ def search():
                             "car_type": car.car_type,
                             "price": locale.currency(car.price, grouping= True),
                             "photo": os.path.join(app.config['UPLOAD_FOLDER'], car.photo),
-                            "user_id": 1
+                            "user_id": car.user_id
                         }
 
                     )
                 return jsonify(cars),200
     except:
-        return jsonify({'message': 'Invalid token provided'}),401
+        return jsonify({"message": "Access token is missing or invalid"}),401
 
     return ''
 
-@app.route('/api/users/{user_id}', methods=['GET'])
+@app.route('/api/users/<int:user_id>', methods=['GET'])
 @login_required
 def user(user_id):
-    return ''
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'] == current_user.username:
+            if request.method == 'GET':
+                returneduser = Users.query.filter_by(id=user_id).first()
+                user = {
+                    "id": returneduser.id,
+                    "username": returneduser.username,
+                    "name": returneduser.name,
+                    "photo": os.path.join(app.config['UPLOAD_FOLDER'], returneduser.photo)[1:],
+                    "email": returneduser.email,
+                    "location": returneduser.location,
+                    "biography": returneduser.biography,
+                    "date_joined": returneduser.date_joined
+                }
+            return jsonify(user),200
+    except:
+        return jsonify({"message": "Access token is missing or invalid"}),401
 
-@app.route('/api/users/{user_id}/favourites', methods=['GET'])
+@app.route('/api/users/<int:user_id>/favourites', methods=['GET'])
 @login_required
 def favourites(user_id):
-    return ''
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'] == current_user.username:
+            if request.method == 'GET':
+                returnedcars = []
+                favourites = Favourites.query.filter_by(user_id=user_id).all()
+                for favourite  in favourites:
+                    tempcar = Cars.query.filter_by(id = favourite.car_id).first()
+                    if tempcar in returnedcars:
+                        continue
+                    returnedcars.append(
+                        {
+                            "id": tempcar.id,
+                            "description": tempcar.description,
+                            "year": tempcar.year,
+                            "make": tempcar.make,
+                            "model": tempcar.model,
+                            "colour": tempcar.colour,
+                            "transmission": tempcar.transmission,
+                            "car_type": tempcar.car_type,
+                            "price": locale.currency(tempcar.price, grouping= True),
+                            "photo": os.path.join(app.config['UPLOAD_FOLDER'], tempcar.photo)[1:],
+                            "user_id": tempcar.user_id
+                        }
+
+                    ) 
+                return jsonify(returnedcars),200
+    except:
+        return jsonify({"message": "Access token is missing or invalid"}),401
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
@@ -281,6 +327,20 @@ def send_text_file(file_name):
 @app.route('/api/csrf-token', methods=['GET'])
 def get_csrf():
     return jsonify({'csrf_token': generate_csrf()})
+
+@app.route('/api/uid', methods=['GET'])
+@login_required
+def uid():
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+         return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'] == current_user.username:
+            if request.method == "GET":
+                return jsonify({"message": current_user.id}),200
+    except:
+        return jsonify({"message": "Access token is missing or invalid"}),401 
 
 
 def form_errors(form):
