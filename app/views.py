@@ -31,7 +31,7 @@ locale.setlocale( locale.LC_ALL, 'en_CA.UTF-8' )
 
 @app.route('/')
 def index():
-    return jsonify(message="This is the beginning of our API")
+    return send_file(os.path.join('../dist/', 'index.html'))
 
 
 @app.route('/api/register', methods=['POST'])

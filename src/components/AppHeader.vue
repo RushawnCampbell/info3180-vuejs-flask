@@ -28,7 +28,7 @@
             <RouterLink class="nav-link" to="/logout">Logout</RouterLink>
           </li>
           <li id="login" v-else>
-          <RouterLink class="nav-link" to="/login">Log</RouterLink>
+          <RouterLink class="nav-link" to="/login">Login</RouterLink>
           </li>
 
 
