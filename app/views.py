@@ -194,8 +194,15 @@ def favourite(car_id):
         if decoded['sub'] == current_user.username:
             if request.method == "POST":
                 car = json.loads(request.data)
-                favorite = Favourites(car['car_id'], car['user_id'])
-                db.session.add(favorite)
+                current_favorites = Favourites.query.all()
+                for fave in current_favorites:
+                    if fave.user_id == car['user_id']  and fave.car_id == car['car_id']:
+                        Favourites.query.filter_by(car_id=car['car_id'], user_id = car['user_id'] ).delete()
+                        db.session.commit()
+                        return jsonify({"message": "Car removed from Favourites"}),401
+                
+                favourite = Favourites(car['car_id'], car['user_id'])
+                db.session.add(favourite)
                 db.session.commit()
                 feedback = {
                     "message": "Car Successfully Favourited",
@@ -296,24 +303,23 @@ def favourites(user_id):
                 favourites = Favourites.query.filter_by(user_id=user_id).all()
                 for favourite  in favourites:
                     tempcar = Cars.query.filter_by(id = favourite.car_id).first()
-                    if tempcar in returnedcars:
+                    tempcarinfo={
+                        "id": tempcar.id,
+                        "description": tempcar.description,
+                        "year": tempcar.year,
+                        "make": tempcar.make,
+                        "model": tempcar.model,
+                        "colour": tempcar.colour,
+                        "transmission": tempcar.transmission,
+                        "car_type": tempcar.car_type,
+                        "price": locale.currency(tempcar.price, grouping= True),
+                        "photo": os.path.join(app.config['UPLOAD_FOLDER'], tempcar.photo)[1:],
+                        "user_id": tempcar.user_id
+                    }
+                    if tempcarinfo in returnedcars:
                         continue
-                    returnedcars.append(
-                        {
-                            "id": tempcar.id,
-                            "description": tempcar.description,
-                            "year": tempcar.year,
-                            "make": tempcar.make,
-                            "model": tempcar.model,
-                            "colour": tempcar.colour,
-                            "transmission": tempcar.transmission,
-                            "car_type": tempcar.car_type,
-                            "price": locale.currency(tempcar.price, grouping= True),
-                            "photo": os.path.join(app.config['UPLOAD_FOLDER'], tempcar.photo)[1:],
-                            "user_id": tempcar.user_id
-                        }
-
-                    ) 
+                    else:
+                        returnedcars.append(tempcarinfo) 
                 return jsonify(returnedcars),200
     except:
         return jsonify({"message": "Access token is missing or invalid"}),401

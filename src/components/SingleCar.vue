@@ -16,9 +16,9 @@
             <div><label>Transmission</label> <span>{{car.transmission}}</span></div>
         </section>
 
-        <section class="inforow">
+        <section  id="interact" class="inforow">
         <button type="submit" class="btn_ btn-success" >Email Owner</button>
-        <button type="submit" v-on:click="addfave" class="btn_ btn-success" >Like</button>
+        <button id="likebtn" type="submit" v-on:click="addfave" class="btn_ btn-success" ><img id="like" src="../assets/like.svg"></button>
         </section>
         
     </section>
@@ -148,8 +148,17 @@ section.inforow{
    width: 90%;
 }
 
-section.inforow img#like{
-    fill: red;
+section#interact{
+    width: 100%;
+}
+
+button#likebtn{
+    background: none;
+}
+
+button#likebtn img{
+    filter: grayscale(100%);
+    width: 2em;
 }
 section.inforow div label{
     margin-right: 2em;

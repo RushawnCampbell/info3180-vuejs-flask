@@ -57,7 +57,6 @@ export default {
                         })
                         .then(function(data) {
                             sessionStorage.setItem('uid', data.message);
-                            alert(sessionStorage.getItem('uid'))
                         });
                       this.$router.push('/explore');
                   }
