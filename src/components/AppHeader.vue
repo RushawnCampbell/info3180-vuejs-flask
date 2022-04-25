@@ -43,6 +43,12 @@
           <RouterLink class="nav-link" to="/login">Login</RouterLink>
           </li>
 
+          <li id="logout" v-if="`${isauth}` == 'true'" class="nav-item">
+          </li>
+          <li id="login" v-else>
+          <RouterLink class="nav-link" to="/login">Login</RouterLink>
+          </li>
+
           </ul>
         </div>
       </div>
