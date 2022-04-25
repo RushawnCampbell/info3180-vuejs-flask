@@ -22,13 +22,8 @@ export default {
                 return response.json();
             })
             .then((data)=>{
-                const logoutbtn=  document.querySelector('li#logout');
-                sessionStorage.setItem("isauth", false);
                 sessionStorage.clear();
-                logoutbtn.classList.remove('show');
-                logoutbtn.classList.add('hide');
-                this.$router.push('/');
-
+                window.location ='/';
             })
 
         },

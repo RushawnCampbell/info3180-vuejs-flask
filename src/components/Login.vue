@@ -18,7 +18,6 @@
 export default {
     data() {
         return {
-            message: 'login'
         };
     },
     methods: {
@@ -59,7 +58,7 @@ export default {
                         .then(function(data) {
                             sessionStorage.setItem('uid', data.message);
                         });
-                      this.$router.push('/explore');
+                        window.location ='/explore';
                   }
               })
         },

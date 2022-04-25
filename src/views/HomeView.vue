@@ -15,7 +15,6 @@
     </section>
   
 
-
     <section class="image">
           <img src="../assets/car.jpg"/>
     </section>
@@ -30,10 +29,6 @@ export default {
         return {
             message: "Hello World! This is Group 19 final project"
         };
-    },
-    methods : {
-
-
     }
 }
 </script>

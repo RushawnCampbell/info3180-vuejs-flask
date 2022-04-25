@@ -24,25 +24,24 @@
               <RouterLink class="nav-link" to="/about">About</RouterLink>
             </li>
 
-            <li class="nav-item" v-if="isauth=='true'">
+            <li  id="addcar" v-if="`${isauth}` == 'true'" class="nav-item" >
               <RouterLink class="nav-link" to="/cars/new">Add Car</RouterLink>
             </li>
 
-            <li class="nav-item" v-if="isauth=='true'">
+            <li id="explore" v-if="`${isauth}` == 'true'" class="nav-item" >
               <RouterLink class="nav-link" to="/explore">Explore</RouterLink>
             </li>
 
-            <li v-if="isauth=='true'" class="nav-item">
+            <li id="profile" v-if="`${isauth}` == 'true'" class="nav-item">
               <RouterLink class="nav-link" :to="{path: '/users/'+ uid}" >My Profile</RouterLink>
             </li>
 
-          <li id="logout" v-if="isauth=='true'" class="nav-item">
+          <li id="logout" v-if="`${isauth}` == 'true'" class="nav-item">
             <RouterLink class="nav-link" to="/logout">Logout</RouterLink>
           </li>
           <li id="login" v-else>
           <RouterLink class="nav-link" to="/login">Login</RouterLink>
           </li>
-
 
           </ul>
         </div>
@@ -53,16 +52,17 @@
 
 <script>
 import { RouterLink } from "vue-router";
-
 export default {
     data() {
         return {
           isauth: sessionStorage.getItem('isauth'),
-          uid: sessionStorage.getItem('uid')
+          uid: sessionStorage.getItem('uid'),
         };
     },
     created(){
-         sessionStorage.setItem('isauth', sessionStorage.getItem('isauth'))
+         
+         this.isauth = sessionStorage.getItem('isauth');
+         
     }
 }
 </script>
@@ -77,5 +77,12 @@ img#carlogo{
   width: 1.25rem;
   margin: 0 1em 0 1em;
 
+}
+.hide{
+    visibility: none;
+}
+
+.show{
+    visibility: visible;
 }
 </style>
