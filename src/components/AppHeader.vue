@@ -58,17 +58,22 @@
 
 <script>
 import { RouterLink } from "vue-router";
+
+
 export default {
     data() {
         return {
-          isauth: sessionStorage.getItem('isauth'),
           uid: sessionStorage.getItem('uid'),
+          isauth: localStorage.getItem('authed')
         };
     },
     created(){
-         
-         this.isauth = sessionStorage.getItem('isauth');
-         
+
+    let self = this;
+    setInterval(()=>{
+       self.isauth = localStorage.getItem('authed');
+    }, 1000);
+    
     }
 }
 </script>

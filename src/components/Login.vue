@@ -28,7 +28,6 @@ export default {
             let self = this;
             let stat = 0;
             fetch('/api/auth/login', {
-
                 method: 'POST',
                 body: form_data,
                 headers: {
@@ -45,6 +44,7 @@ export default {
                   if (stat == 200){
                       sessionStorage.setItem('token', data.token);
                       sessionStorage.setItem('isauth', 'true');
+                      localStorage.setItem('authed', true);
                       fetch('/api/uid', {
                         method: 'GET',
                         headers: {

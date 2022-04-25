@@ -22,6 +22,7 @@ export default {
             })
             .then((data)=>{
                 sessionStorage.clear();
+                localStorage.setItem('authed', false);
                 window.location ='/';
             })
 
