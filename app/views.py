@@ -6,7 +6,7 @@ This file creates your application.
 """
 
 from app import app, db, login_manager
-from flask import request, jsonify, send_file
+from flask import request, jsonify, send_file, send_from_directory
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash
 from app.models import Users
@@ -101,6 +101,7 @@ def load_user(id):
 @login_required
 def cars():
     user_token= request.headers['Authorization'].split(' ')[1]
+    
     if not user_token:
         return jsonify({"message": "Access token is missing or invalid"}),401
     try:
@@ -120,7 +121,7 @@ def cars():
                         "transmission": car.transmission,
                         "car_type": car.car_type,
                         "price": locale.currency(car.price, grouping= True),
-                        "photo": os.path.join(app.config['UPLOAD_FOLDER'], car.photo)[1:],
+                        "photo": car.photo,
                         "user_id": current_user.id
                     })
                 if len(cars) >=  3:
@@ -131,6 +132,7 @@ def cars():
                 if formobject.validate_on_submit():
                     fileobj = request.files['photo']
                     cleanedname = secure_filename(fileobj.filename)
+                   
                     fileobj.save(os.path.join(app.config['UPLOAD_FOLDER'], cleanedname))
                     if fileobj and (cleanedname != "" and cleanedname != " "):
                         newcar = Cars(formobject.description.data, formobject.make.data, formobject.model.data,formobject.colour.data, formobject.year.data, formobject.transmission.data, formobject.car_type.data, formobject.price.data, cleanedname, current_user.id )
@@ -383,6 +385,10 @@ def form_errors(form):
 
     return error_messages
 
+
+@app.route('/uploads/<filename>')
+def get_image(filename):
+    return send_from_directory(os.path.join(os.getcwd(), app.config['UPLOAD_FOLDER']), filename)
 
 @app.after_request
 def add_header(response):

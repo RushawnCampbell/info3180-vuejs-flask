@@ -24,7 +24,7 @@
 
     <div id="carsparent">
         <div v-for= "car in cars" class="card">
-            <img class="card-img-top" v-bind:src= car.photo v-bind:alt=car.car_type>
+            <img class="card-img-top" v-bind:src="`/uploads/${car.photo}`" v-bind:alt=car.car_type>
             <div class="card-body">
                 <section class="card-title"> <span>{{ car.year }} {{car.make}}</span> <span id="pricespan"><img src="../assets/price-tag.png" /> {{car.price}}</span></section>
                 <p class="card-text">{{car.model}}</p>
