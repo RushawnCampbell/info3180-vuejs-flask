@@ -150,8 +150,8 @@ def cars():
                             "photo": cleanedname,
                             "user_id": current_user.id
                         }
-                        return jsonify(feedback),200
-                return jsonify(form_errors(formobject)),401 
+                        return jsonify(feedback),201
+                return jsonify(form_errors(formobject)),200 
                         
     except:
         return jsonify({"message": "Access token is missing or invalid"}),401

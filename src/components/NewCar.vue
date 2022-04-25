@@ -2,7 +2,11 @@
     <div class="width">
         <h3>Add New Car</h3>
       <div class="text-left card_">
-        <span id="msg" class=" form-control alert hide" ></span>
+        <section id="msg" class=" form-control alert hide" >
+                <li v-for="message in messages">
+                     {{message}}
+                </li>
+        </section>
         <form @submit.prevent="addCarForm" method="POST" id="addCarForm" enctype = "multipart/form-data">
             <div class="d-inline-flex w_full ">
                 <div class="mb-3  space_between w_full">
@@ -72,7 +76,7 @@
 export default {
     data() {
         return {
-            csrf_token : '',
+            messages: []
         };
     },
     methods: {
@@ -81,7 +85,7 @@ export default {
             let addCarForm = document.getElementById('addCarForm');
             let form_data = new FormData(addCarForm);
             let self = this;
-            let alertcontainer =  document.querySelector('span#msg');
+            let alertcontainer =  document.querySelector('section#msg');
             let stat = 0;
             fetch('/api/cars', {
 
@@ -99,11 +103,32 @@ export default {
               })
               .then((data)=>{
                   
-                if (stat == 200){
-                        alertcontainer.classList.add('alert-success');
-                        alertcontainer.classList.remove('alert-danger');
-                        alertcontainer.innerHTML= "New Car Added Successfully";
-                        alertcontainer.classList.add('show');
+                if  (stat == 201){
+                    console.log(data);
+                    alertcontainer.classList.add('alert-success');
+                    alertcontainer.classList.remove('alert-danger');
+                    alertcontainer.innerHTML= "User Registered Successfully";
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
+                }
+                else if (stat == 200){
+                    let errorlist = data;
+                    self.messages = [];
+                    for (let err=0; err<errorlist.length; err++){
+                        self.messages.push(errorlist[err]);
+                    }        
+                    console.log(self.messages);
+                    alertcontainer.classList.remove('alert-success');
+                    alertcontainer.classList.add('alert-danger');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
+                }
+                else{
+                    self.messages.push(data.message);
+                    alertcontainer.classList.remove('alert-success');
+                    alertcontainer.classList.add('alert-danger');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
                 }
 
               })
