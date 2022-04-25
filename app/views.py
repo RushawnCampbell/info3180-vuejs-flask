@@ -255,7 +255,7 @@ def search():
                             "transmission": car.transmission,
                             "car_type": car.car_type,
                             "price": locale.currency(car.price, grouping= True),
-                            "photo": os.path.join(app.config['UPLOAD_FOLDER'], car.photo),
+                            "photo": car.photo,
                             "user_id": car.user_id
                         }
 
