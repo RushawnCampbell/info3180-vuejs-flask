@@ -23,7 +23,7 @@ export default {
             .then((data)=>{
                 sessionStorage.clear();
                 localStorage.setItem('authed', false);
-                window.location ='/';
+                this.$router.push('/login');
             })
 
         },
@@ -45,11 +45,4 @@ export default {
 };
 </script>
 <style>
-.hide{
-    display: none;
-}
-
-.show{
-    display: block;
-}
 </style>

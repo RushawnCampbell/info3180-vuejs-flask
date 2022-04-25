@@ -72,7 +72,7 @@ export default {
     let self = this;
     setInterval(()=>{
        self.isauth = localStorage.getItem('authed');
-    }, 1000);
+    }, 500);
     
     }
 }
@@ -88,12 +88,5 @@ img#carlogo{
   width: 1.25rem;
   margin: 0 1em 0 1em;
 
-}
-.hide{
-    visibility: none;
-}
-
-.show{
-    visibility: visible;
 }
 </style>
