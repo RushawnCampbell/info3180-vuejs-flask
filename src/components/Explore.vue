@@ -3,7 +3,9 @@
 
 <section id="exploreparent">
     <h3>Explore</h3>
-
+    <section id="msg" class=" form-control alert hide" >
+        {{message}}
+    </section>
     <form @submit.prevent="searchCar" id="searchForm">
             <div class="row">
                 <div class="form-group col-md-5">
@@ -41,6 +43,7 @@
 export default {
     data() {
         return {
+            messages: '',
             cars: [],
             searchMake: '',
             searchModel: ''
@@ -51,6 +54,7 @@ export default {
         searchCar(){
             let searchForm = document.getElementById('searchForm');
             let self = this;
+            let stat = 0;
             fetch('/api/search?searchmake='+self.searchMake + '&searchmodel=' + self.searchModel , {
 
                 method: 'GET',
@@ -60,11 +64,21 @@ export default {
                 }
               })
               .then((response)=>{
+                  stat =  response.status
                   return response.json();
               })
               .then((data)=>{
-                console.log(data);
-                self.cars = data;
+
+                if (stat == 200){
+                    self.cars = data;
+                }
+                else if (stat == 401){
+                    self.message = data.message;   
+                    alertcontainer.classList.remove('alert-success');
+                    alertcontainer.classList.add('alert-danger');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');      
+                }
               })
         },
     
@@ -118,7 +132,13 @@ div#carsparent{
     align-content: center;
     align-items: center;
 }
+.hide{
+    display:none;
+}
 
+.show{
+    display: block;
+}
 div.card{
     width: 100%;
 }
