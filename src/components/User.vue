@@ -5,11 +5,11 @@
     <section id="msg" class=" form-control alert hide" >
         {{messages}}
     </section>
-    <div class="parentcard">
-        <section class="photo"> 
+    <div class="usercard">
+        <section class="userphoto"> 
              <img v-bind:src="`/uploads/${user.photo}`" v-bind:alt=user.username >
         </section>
-        <section class="content"> 
+        <section class="usercontent"> 
             <h3>{{user.name}}</h3>
             <span>@{{user.username}}</span>
             <p>{{user.biography}}</p>
@@ -28,7 +28,7 @@
  </div>
 
     <h3>Cars Favourited</h3>
-    <div id="carsparent">
+    <div id="usercarsparent">
         <div v-for= "car in cars" class="card">
             <img class="card-img-top" v-bind:src= car.photo v-bind:alt=car.car_type>
             <div class="card-body">
@@ -111,7 +111,7 @@ export default {
 <style>
 
 
-div#carsparent{
+div#usercarsparent{
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     grid-column-gap: 2em;
@@ -167,7 +167,7 @@ section#exploreparent{
     margin: auto;
 }
 
-div.parentcard{
+div.usercard{
     display: flex;
     flex-flow: row wrap;
     width: 100%;
@@ -175,7 +175,7 @@ div.parentcard{
     box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
 }
 
-section.photo{
+section.userphoto{
     width: 25%;
     padding: 2em;
     display: flex;
@@ -183,7 +183,7 @@ section.photo{
     align-items: flex-start;
     justify-items: center;
 }
-section.content{
+section.usercontent{
     display: grid;
     grid-template-columns: 1fr;
     width: 75%;
@@ -193,7 +193,7 @@ section.content{
     margin-bottom:4em;
 }
 
-section.content p{
+section.usercontent p{
     margin-top: 1em;
 }
 
@@ -213,7 +213,7 @@ section.inforow div span{
     margin-left: 4em;
 }
 
-div.parentcard section.photo img{
+div.usercard section.userphoto img{
    width: 80%;
    border-radius: 50%;
 }
