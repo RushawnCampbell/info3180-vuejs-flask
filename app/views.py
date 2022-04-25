@@ -178,7 +178,7 @@ def singlecar(car_id):
                     "transmission": returnedcar.transmission,
                     "car_type": returnedcar.car_type,
                     "price": locale.currency(returnedcar.price, grouping= True),
-                    "photo": os.path.join(app.config['UPLOAD_FOLDER'], returnedcar.photo)[1:],
+                    "photo": returnedcar.photo,
                     "user_id": returnedcar.user_id
                 }
             return jsonify(car),200

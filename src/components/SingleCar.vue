@@ -1,7 +1,7 @@
 <template>
  <div class="parentcard">
     <section class="photo"> 
-        <img v-bind:src=car.photo v-bind:alt=car.car_type >
+        <img v-bind:src="`/uploads/${car.photo}`" v-bind:alt=car.car_type >
     </section>
     <section class="content"> 
         <h3> {{car.year}} {{car.make}}</h3>
