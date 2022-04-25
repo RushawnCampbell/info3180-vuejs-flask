@@ -1,4 +1,7 @@
 <template>
+<section id="msg" class=" form-control alert hide" >
+    {{messages}}
+</section>
  <div class="parentcard">
     <section class="photo"> 
         <img v-bind:src="`/uploads/${car.photo}`" v-bind:alt=car.car_type >
@@ -28,6 +31,7 @@
 export default {
     data() {
         return {
+            messages: '',
             car: {},
             favourited: false,
         };
@@ -37,6 +41,7 @@ export default {
         addfave(){
             let self = this;
             let stat = 0;
+            let alertcontainer =  document.querySelector('section#msg');
             fetch(`/api/cars/${this.$route.params.car_id}`,
             {
                 method: 'GET',
@@ -49,7 +54,6 @@ export default {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 self.car = data
             });
           
@@ -71,15 +75,31 @@ export default {
                 return response.json();
             })
             .then(function(data) {
-                console.log(data);
                 const likeimage =  document.querySelector("button#likebtn img");
                 if (stat == 200){
+                    self.messages = data.message;
                     likeimage.classList.remove("unfavourited");
                     likeimage.classList.add("favourited");
+                    alertcontainer.classList.add('alert-success');
+                    alertcontainer.classList.remove('alert-danger');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show'); 
+                }
+                else if (stat == 201){
+                    self.messages= data.message; 
+                    likeimage.classList.remove("favourited");
+                    likeimage.classList.add("unfavourited");  
+                    alertcontainer.classList.remove('alert-success');
+                    alertcontainer.classList.add('alert-danger');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');      
                 }
                 else{
-                    likeimage.classList.remove("favourited");
-                    likeimage.classList.add("unfavourited");
+                    self.messages = data.message;
+                    alertcontainer.classList.remove('alert-success');
+                    alertcontainer.classList.add('alert-danger');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
                 }
             });
         },

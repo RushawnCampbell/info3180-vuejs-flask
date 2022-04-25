@@ -2,7 +2,7 @@
     <section class="formcombo">
     <h2>Login to your account</h2>
     <section id="msg" class=" form-control alert hide" >
-        {{message}}
+        {{messages}}
     </section>
         <form @submit.prevent="login" Mmethod="POST" id="loginForm">
             <div class="form-group">
@@ -21,7 +21,7 @@
 export default {
     data() {
         return {
-            message:''
+            messages:''
         };
     },
     methods: {
@@ -69,8 +69,7 @@ export default {
                        
                   }
                   else if (stat == 401){
-                        self.message = data.message;   
-                        console.log(self.messages);
+                        self.messages = data.message;   
                         alertcontainer.classList.remove('alert-success');
                         alertcontainer.classList.add('alert-danger');
                         alertcontainer.classList.remove('hide');

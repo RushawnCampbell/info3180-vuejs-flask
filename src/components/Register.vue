@@ -79,10 +79,10 @@ export default {
               })
               .then((data)=>{
                 if  (stat == 201){
-                    console.log(data);
+                    self.messages = [];
+                    self.messages.push("User Registered Successfully");
                     alertcontainer.classList.add('alert-success');
                     alertcontainer.classList.remove('alert-danger');
-                    alertcontainer.innerHTML= "User Registered Successfully";
                     alertcontainer.classList.remove('hide');
                     alertcontainer.classList.add('show');
                 }
@@ -93,7 +93,6 @@ export default {
                     for (let err=0; err<errorlist.length; err++){
                         self.messages.push(errorlist[err]);
                     }        
-                    console.log(self.messages);
                     alertcontainer.classList.remove('alert-success');
                     alertcontainer.classList.add('alert-danger');
                     alertcontainer.classList.remove('hide');

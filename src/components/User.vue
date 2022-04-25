@@ -2,10 +2,12 @@
 
 
 <section id="exploreparent">
-
+    <section id="msg" class=" form-control alert hide" >
+        {{messages}}
+    </section>
     <div class="parentcard">
         <section class="photo"> 
-            <img v-bind:src=user.photo v-bind:alt=user.username >
+             <img v-bind:src="`/uploads/${user.photo}`" v-bind:alt=user.username >
         </section>
         <section class="content"> 
             <h3>{{user.name}}</h3>
@@ -45,13 +47,15 @@
 export default {
     data() {
         return {
+            messages: '',
             cars: [],
             user:{}
         };
     },
     created() {
         let self = this;
-
+        let stat = 0;
+        let alertcontainer =  document.querySelector('section#msg');
         fetch(`/api/users/${sessionStorage.getItem('uid')}`,
         {
             method: 'GET',
@@ -61,11 +65,20 @@ export default {
             }
         })
         .then(function(response) {
+            stat = response.status;
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
-            self.user = data;
+            if(stat == 200){
+                self.user = data;
+            }
+            else if (stat == 401){
+                self.messages = data.message;   
+                alertcontainer.classList.remove('alert-success');
+                alertcontainer.classList.add('alert-danger');
+                alertcontainer.classList.remove('hide');
+                alertcontainer.classList.add('show');
+            }
         });
 
         fetch(`/api/users/${sessionStorage.getItem('uid')}/favourites`,
@@ -80,8 +93,16 @@ export default {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
-            self.cars = data;
+            if(stat == 200){
+                self.cars = data;
+            }
+            else if (stat == 401){
+                self.messages = data.message;   
+                alertcontainer.classList.remove('alert-success');
+                alertcontainer.classList.add('alert-danger');
+                alertcontainer.classList.remove('hide');
+                alertcontainer.classList.add('show');
+            }
         });
     },
 };

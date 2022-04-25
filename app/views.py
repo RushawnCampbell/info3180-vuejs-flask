@@ -201,7 +201,7 @@ def favourite(car_id):
                     if fave.user_id == car['user_id']  and fave.car_id == car['car_id']:
                         Favourites.query.filter_by(car_id=car['car_id'], user_id = car['user_id'] ).delete()
                         db.session.commit()
-                        return jsonify({"message": "Car removed from Favourites"}),401
+                        return jsonify({"message": "Car removed from Favourites"}),201
                 
                 favourite = Favourites(car['car_id'], car['user_id'])
                 db.session.add(favourite)
@@ -281,7 +281,7 @@ def user(user_id):
                     "id": returneduser.id,
                     "username": returneduser.username,
                     "name": returneduser.name,
-                    "photo": os.path.join(app.config['UPLOAD_FOLDER'], returneduser.photo)[1:],
+                    "photo": returneduser.photo,
                     "email": returneduser.email,
                     "location": returneduser.location,
                     "biography": returneduser.biography,
