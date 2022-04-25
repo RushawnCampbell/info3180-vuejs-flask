@@ -62,7 +62,7 @@ export default {
                 method: 'POST',
                 body: JSON.stringify({
                     "car_id": self.car.id,
-                    "user_id": self.car.user_id
+                    "user_id": sessionStorage.getItem('uid')
                 }),
                 headers: {
                     'Accept': 'application/json',

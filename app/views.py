@@ -198,19 +198,20 @@ def favourite(car_id):
                 car = json.loads(request.data)
                 current_favorites = Favourites.query.all()
                 for fave in current_favorites:
+                    print("USER ID  CAR ID ", car['user_id'], car['car_id'] )
                     if fave.user_id == car['user_id']  and fave.car_id == car['car_id']:
                         Favourites.query.filter_by(car_id=car['car_id'], user_id = car['user_id'] ).delete()
                         db.session.commit()
                         return jsonify({"message": "Car removed from Favourites"}),201
-                
-                favourite = Favourites(car['car_id'], car['user_id'])
-                db.session.add(favourite)
-                db.session.commit()
-                feedback = {
-                    "message": "Car Successfully Favourited",
-                    "car_id": car['car_id']
-                }
-                return jsonify(feedback),200
+                    else:
+                        favourite = Favourites(car['car_id'], car['user_id'])
+                        db.session.add(favourite)
+                        db.session.commit()
+                        feedback = {
+                            "message": "Car Successfully Favourited",
+                            "car_id": car['car_id']
+                        }
+                        return jsonify(feedback),200
     except:
         return jsonify({"message": "Access token is missing or invalid"}),401
 
