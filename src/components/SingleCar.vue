@@ -2,11 +2,11 @@
 <section id="msg" class=" form-control alert hide" >
     {{messages}}
 </section>
- <div class="parentcard">
-    <section class="photo"> 
+ <div class="singlecarparent">
+    <section class="singlecarphoto"> 
         <img v-bind:src="`/uploads/${car.photo}`" v-bind:alt=car.car_type >
     </section>
-    <section class="content"> 
+    <section class="singlecarcontent"> 
         <h3> {{car.year}} {{car.make}}</h3>
         <span>{{car.model}}</span>
         <p>{{car.description}}</p>
@@ -171,7 +171,7 @@ export default {
 </script>
 
 <style>
-div.parentcard{
+div.singlecarparent{
     display: grid;
     grid-template-columns: repeat(2, 1fr);
     width: 70%;
@@ -179,7 +179,7 @@ div.parentcard{
     box-shadow: rgba(0, 0, 0, 0.25) 0px 0.0625em 0.0625em, rgba(0, 0, 0, 0.25) 0px 0.125em 0.5em, rgba(255, 255, 255, 0.1) 0px 0px 0px 1px inset;
 }
 
-section.content{
+section.singlecarcontent{
     display: grid;
     grid-template-columns: 1fr;
     width: 100%;
@@ -188,11 +188,11 @@ section.content{
     padding: 1.5em;
 }
 
-section.content p{
+section.singlecarcontent p{
     margin-top: 1em;
 }
 
-div.parentcard section.photo img{
+div.singlecarparent section.singlecarphoto img{
    height:100%;
    width: 100%;
    object-fit:inherit;
@@ -231,7 +231,7 @@ section.inforow div label{
     margin-right: 2em;
 }
 
-div.parentcard button{
+div.singlecarparent button{
     align-self: end;
 }
 
