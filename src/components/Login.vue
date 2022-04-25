@@ -32,6 +32,7 @@ export default {
             let self = this;
             let stat = 0;
             let alertcontainer =  document.querySelector('section#msg');
+            let inputfields = document.querySelectorAll('div input');
             fetch('/api/auth/login', {
                 method: 'POST',
                 body: form_data,
@@ -50,8 +51,9 @@ export default {
                       sessionStorage.setItem('token', data.token);
                       sessionStorage.setItem('isauth', 'true');
                       localStorage.setItem('authed', true);
-                      document.querySelector("input#username").value='';
-                      document.querySelector("input#password").value='';
+                      inputfields.forEach((inp)=> {
+                            inp.value = "";
+                        });
                       fetch('/api/uid', {
                         method: 'GET',
                         headers: {

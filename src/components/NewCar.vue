@@ -86,6 +86,8 @@ export default {
             let form_data = new FormData(addCarForm);
             let self = this;
             let alertcontainer =  document.querySelector('section#msg');
+            let inputfields = document.querySelectorAll('div input');
+            let descfield = document.querySelector('#description');
             let stat = 0;
             fetch('/api/cars', {
 
@@ -102,7 +104,12 @@ export default {
                   return response.json();
               })
               .then((data)=>{
-                  
+                inputfields.forEach((inp)=> {
+                    inp.value = "";
+                });
+                descfield.value= "";
+
+
                 if  (stat == 201){
                     self.messages = [];
                     self.messages.push("New Car Added Successfully");
@@ -130,6 +137,11 @@ export default {
                     alertcontainer.classList.remove('hide');
                     alertcontainer.classList.add('show');
                 }
+
+                const routetoview = setTimeout(()=>{
+                    this.$router.push('/explore');
+                    clearTimeout(routetoview);
+                }, 3000);
 
               })
         },
