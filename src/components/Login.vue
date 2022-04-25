@@ -58,7 +58,7 @@ export default {
                         .then(function(data) {
                             sessionStorage.setItem('uid', data.message);
                         });
-                        window.location ='/explore';
+                        this.$router.push('/explore')
                   }
               })
         },
