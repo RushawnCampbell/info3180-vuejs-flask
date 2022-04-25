@@ -1,6 +1,9 @@
 <template>
     <section class="formcombo">
     <h2>Login to your account</h2>
+    <section id="msg" class=" form-control alert hide" >
+        {{message}}
+    </section>
         <form @submit.prevent="login" Mmethod="POST" id="loginForm">
             <div class="form-group">
                 <label for="username">Username</label><br>
@@ -18,6 +21,7 @@
 export default {
     data() {
         return {
+            message:''
         };
     },
     methods: {
@@ -27,6 +31,7 @@ export default {
             let form_data = new FormData(loginForm);
             let self = this;
             let stat = 0;
+            let alertcontainer =  document.querySelector('section#msg');
             fetch('/api/auth/login', {
                 method: 'POST',
                 body: form_data,
@@ -45,6 +50,7 @@ export default {
                       sessionStorage.setItem('token', data.token);
                       sessionStorage.setItem('isauth', 'true');
                       localStorage.setItem('authed', true);
+                     
                       fetch('/api/uid', {
                         method: 'GET',
                         headers: {
@@ -58,8 +64,18 @@ export default {
                         .then(function(data) {
                             sessionStorage.setItem('uid', data.message);
                         });
+
                         this.$router.push('/explore')
+                       
                   }
+                  else if (stat == 401){
+                        self.message = data.message;   
+                        console.log(self.messages);
+                        alertcontainer.classList.remove('alert-success');
+                        alertcontainer.classList.add('alert-danger');
+                        alertcontainer.classList.remove('hide');
+                        alertcontainer.classList.add('show');
+                }
               })
         },
         getCsrfToken() {
@@ -111,6 +127,14 @@ section.formcombo{
 form#loginForm{
     box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
     padding: 2em 1em;
+}
+
+.hide{
+    display:none;
+}
+
+.show{
+    display: block;
 }
 
 </style>

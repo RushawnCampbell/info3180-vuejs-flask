@@ -2,7 +2,11 @@
     <div class="width">
         <h3>Register New User</h3>
       <div class="text-left card_">
-        <span id="msg" class=" form-control alert hide" ></span>
+        <section id="msg" class=" form-control alert hide" >
+                <li v-for="message in messages">
+                     {{message}}
+                </li>
+        </section>
         <form @submit.prevent="registerForm" method="POST" id="registerForm" enctype = "multipart/form-data">
             <div class="d-inline-flex w_full ">
                 <div class="mb-3  space_between w_full">
@@ -49,7 +53,7 @@
 export default {
     data() {
         return {
-            message: ''
+            messages: []
         };
     },
     methods: {
@@ -58,7 +62,8 @@ export default {
             let registerForm = document.getElementById('registerForm');
             let form_data = new FormData(registerForm);
             let self = this;
-            let alertcontainer =  document.querySelector('span#msg');
+            let alertcontainer =  document.querySelector('section#msg');
+            let stat = 0;
             fetch('/api/register', {
 
                 method: 'POST',
@@ -69,15 +74,31 @@ export default {
                 }
               })
               .then((response)=>{
+                  stat = response.status
                   return response.json();
               })
               .then((data)=>{
-                  
-                console.log(data);
-                alertcontainer.classList.add('alert-success');
-                alertcontainer.classList.remove('alert-danger');
-                alertcontainer.innerHTML= "User Registered Successfully";
-                alertcontainer.classList.add('show');
+                if  (stat == 201){
+                    console.log(data);
+                    alertcontainer.classList.add('alert-success');
+                    alertcontainer.classList.remove('alert-danger');
+                    alertcontainer.innerHTML= "User Registered Successfully";
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
+                }
+                else if (stat == 200){
+
+                    let errorlist = data;
+                    self.messages = [];
+                    for (let err=0; err<errorlist.length; err++){
+                        self.messages.push(errorlist[err]);
+                    }        
+                    console.log(self.messages);
+                    alertcontainer.classList.remove('alert-success');
+                    alertcontainer.classList.add('alert-danger');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
+                }
 
               })
         },
@@ -100,14 +121,6 @@ export default {
 </script>
 
 <style>
-
-.hide{
-    display:none;
-}
-
-.show{
-    display: block;
-}
 .width{
   width: 36rem;
   padding-right: 0.75rem;

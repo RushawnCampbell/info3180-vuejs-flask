@@ -59,8 +59,8 @@ def register():
                         "biography": formobject.biography.data,
                         "date_joined": date_joined
                     }
-                return jsonify(feedback),200
-        return jsonify(form_errors(formobject)),401  
+                return jsonify(feedback),201
+        return jsonify(form_errors(formobject)),200  
 
 @app.route('/api/auth/login', methods=['POST'])
 def login():
