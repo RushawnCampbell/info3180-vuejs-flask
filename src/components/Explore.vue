@@ -53,6 +53,7 @@ export default {
 
         searchCar(){
             let searchForm = document.getElementById('searchForm');
+            let alertcontainer =  document.querySelector('section#msg');
             let self = this;
             let stat = 0;
             fetch('/api/search?searchmake='+self.searchMake + '&searchmodel=' + self.searchModel , {
@@ -71,13 +72,25 @@ export default {
 
                 if (stat == 200){
                     self.cars = data;
+                    self.messages = "Results Found";
+                    alertcontainer.classList.add('alert-success');
+                    alertcontainer.classList.remove('alert-danger');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
                 }
                 else if (stat == 401){
-                    self.message = data.message;   
+                    self.messages = data.message;   
                     alertcontainer.classList.remove('alert-success');
                     alertcontainer.classList.add('alert-danger');
                     alertcontainer.classList.remove('hide');
                     alertcontainer.classList.add('show');      
+                }
+                else{
+                    self.messages = data.message; 
+                    alertcontainer.classList.remove('alert-success');
+                    alertcontainer.classList.add('alert-danger');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
                 }
               })
         },

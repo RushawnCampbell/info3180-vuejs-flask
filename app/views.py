@@ -229,13 +229,13 @@ def search():
                 modeldata = params.get('searchmodel')
                 cars= []
                 if makedata != '' and modeldata !='':
-                    searchedcars = Cars.query.filter_by(make = makedata).all()
-                    
+                    searchedcars = Cars.query.filter(Cars.make.ilike("%" +makedata + "%")).all()
+
                 if makedata != '' and modeldata == '':
-                    searchedcars = Cars.query.filter_by(make = makedata).all()
+                    searchedcars = Cars.query.filter(Cars.make.ilike("%" +makedata + "%")).all()
 
                 if makedata == '' and modeldata != '':
-                    searchedcars = Cars.query.filter_by(model = modeldata).all()
+                    searchedcars = Cars.query.filter(Cars.model.ilike("%" + modeldata + "%")).all()
                 
                 if makedata == '' and modeldata =='':
                     searchedcars = Cars.query.all()
@@ -260,6 +260,8 @@ def search():
                         }
 
                     )
+                if len(searchedcars) == 0:
+                    return jsonify({'message': 'No Results Found'}),201
                 return jsonify(cars),200
     except:
         return jsonify({"message": "Access token is missing or invalid"}),401
