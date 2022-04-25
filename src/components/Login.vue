@@ -50,7 +50,8 @@ export default {
                       sessionStorage.setItem('token', data.token);
                       sessionStorage.setItem('isauth', 'true');
                       localStorage.setItem('authed', true);
-                     
+                      document.querySelector("input#username").value='';
+                      document.querySelector("input#password").value='';
                       fetch('/api/uid', {
                         method: 'GET',
                         headers: {

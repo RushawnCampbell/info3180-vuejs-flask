@@ -4,7 +4,7 @@
 <section id="exploreparent">
     <h3>Explore</h3>
     <section id="msg" class=" form-control alert hide" >
-        {{message}}
+        {{messages}}
     </section>
     <form @submit.prevent="searchCar" id="searchForm">
             <div class="row">
