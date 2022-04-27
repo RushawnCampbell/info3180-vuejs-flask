@@ -7,8 +7,8 @@
           <p>United Auto Sales provides the fastest, easiest and most user friendly way to buy or sell cars onine. Find a 
           Great Price on the Vehicle You Want</p>
           <section class="btngrp">
-              <button  class="btn btn-primary" > <RouterLink to="/register" class="nav-link ">Register</RouterLink> </button>
-              <button  class="btn btn-success" > <RouterLink to="/login" class="nav-link ">Login</RouterLink></button>
+              <button  id="register" class="btn btn-primary" > <RouterLink to="/register" class="nav-link ">Register</RouterLink> </button>
+              <button  id="login" class="btn btn-success" > <RouterLink to="/login" class="nav-link ">Login</RouterLink></button>
           </section>
       </section>
     
@@ -31,6 +31,28 @@ export default {
         };
     }
 }
+
+setInterval(()=>{
+  let path = window.location.pathname.split('/');
+  let currentroute = path[path.length - 1];
+  if (currentroute == ''){
+    let loginbtn = document.querySelector("button#login");
+    let registerbtn = document.querySelector("button#register");
+    if (localStorage.getItem('authed') == 'true'){
+        if (!loginbtn.hasAttribute('disabled') || !registerbtn.hasAttribute('disabled')){
+          loginbtn.setAttribute('disabled','');
+          registerbtn.setAttribute('disabled',''); 
+       }
+    }
+    else{
+      if (loginbtn.hasAttribute('disabled') || registerbtn.hasAttribute('disabled')){
+           loginbtn.remove('disabled','');
+           registerbtn.remove('disabled',''); 
+      }
+      
+    }
+  }
+},1000)
 </script>
 
 
