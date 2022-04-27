@@ -209,7 +209,14 @@ section.carinforow{
 }
 
 section.carinforow div.carinfoitem{
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
     width: 50%;
+}
+
+section.carinforow div.carinfoitem label{
+    width:50%;
 }
 
 section#interact{
@@ -230,9 +237,6 @@ button#likebtn{
     width: 2em;
 }
 
-section.carinforow div label{
-    margin-right: 2em;
-}
 
 div.singlecarparent button{
     align-self: end;

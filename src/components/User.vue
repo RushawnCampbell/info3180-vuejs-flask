@@ -21,7 +21,7 @@
             </section>
 
             <section class="inforow">
-                <div><label>Joined</label> <span>{{user.date_joined}}</span></div>
+                <div class="infoitem"><label>Joined</label> <span>{{user.date_joined}}</span></div>
             </section>
             
         </section>
@@ -205,21 +205,28 @@ h3{
 section.inforow{
    display: flex;
    flex-flow: row wrap;
-   justify-content: space-between;
-   width: 90%;
+   width: 80%;
 }
 
 div.infoitem{
-    width: 50%;
+    display: flex;
+    flex-flow: row wrap;
+    justify-content: flex-start;
+    width: 100%;
+}
+
+div.infoitem label{
+    width:50%;
+}
+
+div.infoitem span{
+    width:50%;
 }
 
 div.infoitem span{
     text-align: left;
 }
 
-section.inforow div span{
-    margin-left: 4em;
-}
 
 span#username, p, label{
     color: #949599;
