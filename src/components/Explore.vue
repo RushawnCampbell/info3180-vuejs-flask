@@ -196,5 +196,9 @@ section#exploreparent{
     margin: auto;
 }
 
+div section p{
+     color: #949599;
+}
+
 
 </style>

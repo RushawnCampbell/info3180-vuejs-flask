@@ -92,6 +92,10 @@ export default {
                     alertcontainer.classList.remove('alert-danger');
                     alertcontainer.classList.remove('hide');
                     alertcontainer.classList.add('show');
+                    const routetoview = setTimeout(()=>{
+                        this.$router.push('/login');
+                        clearTimeout(routetoview);
+                    }, 3000);
                 }
                 else if (stat == 200){
 
@@ -105,10 +109,6 @@ export default {
                     alertcontainer.classList.remove('hide');
                     alertcontainer.classList.add('show');
                 }
-                const routetoview = setTimeout(()=>{
-                    this.$router.push('/login');
-                    clearTimeout(routetoview);
-                }, 3000);
 
               })
         },

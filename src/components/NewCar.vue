@@ -117,6 +117,10 @@ export default {
                     alertcontainer.classList.remove('alert-danger');
                     alertcontainer.classList.remove('hide');
                     alertcontainer.classList.add('show');
+                    const routetoview = setTimeout(()=>{
+                        this.$router.push('/explore');
+                        clearTimeout(routetoview);
+                    }, 3000);
                 }
                 else if (stat == 200){
                     let errorlist = data;
@@ -137,11 +141,6 @@ export default {
                     alertcontainer.classList.remove('hide');
                     alertcontainer.classList.add('show');
                 }
-
-                const routetoview = setTimeout(()=>{
-                    this.$router.push('/explore');
-                    clearTimeout(routetoview);
-                }, 3000);
 
               })
         },

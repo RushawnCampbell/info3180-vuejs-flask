@@ -8,15 +8,15 @@
     </section>
     <section class="singlecarcontent"> 
         <h3> {{car.year}} {{car.make}}</h3>
-        <span>{{car.model}}</span>
+        <span id="model">{{car.model}}</span>
         <p>{{car.description}}</p>
         <section class="inforow">
-            <div><label>Color</label> <span>{{car.colour}}</span></div>
-            <div><label>Body Type</label> <span>{{car.car_type}}</span></div>
+            <div class="infoitem"><label>Color</label> <span>{{car.colour}}</span></div>
+            <div class="infoitem"><label>Body Type</label> <span>{{car.car_type}}</span></div>
         </section>
         <section class="inforow">
-            <div><label>Price</label> <span>{{car.price}}</span></div>
-            <div><label>Transmission</label> <span>{{car.transmission}}</span></div>
+            <div class="infoitem"><label>Price</label> <span>{{car.price}}</span></div>
+            <div class="infoitem"><label>Transmission</label> <span>{{car.transmission}}</span></div>
         </section>
 
         <section  id="interact" class="inforow">
@@ -205,8 +205,11 @@ h3{
 section.inforow{
    display: flex;
    flex-flow: row wrap;
-   justify-content: space-between;
-   width: 90%;
+   width: 100%;
+}
+
+section.inforow div.infoitem{
+    width: 50%;
 }
 
 section#interact{
@@ -241,6 +244,13 @@ div.singlecarparent button{
     border: none;
     border-radius: 4px;
     width: 35%;
+}
+
+section p, span#model, label{
+    color: #949599;
+}
+span#model{
+    font-weight: bold;
 }
 
 </style>
