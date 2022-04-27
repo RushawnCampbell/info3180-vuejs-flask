@@ -71,6 +71,7 @@ export default {
               .then((data)=>{
 
                 if (stat == 200){
+                    self.cars=[];
                     self.cars = data;
                     self.messages = "Results Found";
                     alertcontainer.classList.add('alert-success');
@@ -79,6 +80,7 @@ export default {
                     alertcontainer.classList.add('show');
                 }
                 else if (stat == 401){
+                    self.cars=[];
                     self.messages = data.message;   
                     alertcontainer.classList.remove('alert-success');
                     alertcontainer.classList.add('alert-danger');
@@ -86,6 +88,7 @@ export default {
                     alertcontainer.classList.add('show');      
                 }
                 else{
+                    self.cars=[];
                     self.messages = data.message; 
                     alertcontainer.classList.remove('alert-success');
                     alertcontainer.classList.add('alert-danger');
