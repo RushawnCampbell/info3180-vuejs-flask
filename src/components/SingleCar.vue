@@ -10,16 +10,16 @@
         <h3> {{car.year}} {{car.make}}</h3>
         <span id="model">{{car.model}}</span>
         <p>{{car.description}}</p>
-        <section class="inforow">
-            <div class="infoitem"><label>Color</label> <span>{{car.colour}}</span></div>
-            <div class="infoitem"><label>Body Type</label> <span>{{car.car_type}}</span></div>
+        <section class="carinforow">
+            <div class="carinfoitem"><label>Color</label> <span>{{car.colour}}</span></div>
+            <div class="carinfoitem"><label>Body Type</label> <span>{{car.car_type}}</span></div>
         </section>
-        <section class="inforow">
-            <div class="infoitem"><label>Price</label> <span>{{car.price}}</span></div>
-            <div class="infoitem"><label>Transmission</label> <span>{{car.transmission}}</span></div>
+        <section class="carinforow">
+            <div class="carinfoitem"><label>Price</label> <span>{{car.price}}</span></div>
+            <div class="carinfoitem"><label>Transmission</label> <span>{{car.transmission}}</span></div>
         </section>
 
-        <section  id="interact" class="inforow">
+        <section  id="interact" class="carinforow">
         <button type="submit" class="btn_ btn-success" >Email Owner</button>
         <button id="likebtn" type="submit" v-on:click="addfave" class="btn_ btn-success" ><img class="unfavourited" src="../assets/like.svg"></button>
         </section>
@@ -202,13 +202,13 @@ h3{
     margin-bottom: 0;
 }
 
-section.inforow{
+section.carinforow{
    display: flex;
    flex-flow: row wrap;
    width: 100%;
 }
 
-section.inforow div.infoitem{
+section.carinforow div.carinfoitem{
     width: 50%;
 }
 
@@ -230,7 +230,7 @@ button#likebtn{
     width: 2em;
 }
 
-section.inforow div label{
+section.carinforow div label{
     margin-right: 2em;
 }
 
