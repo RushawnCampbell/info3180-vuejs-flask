@@ -27,14 +27,14 @@
 
                 <div class="mb-3 w_full">
                     <label for="year" class="form-label">Year</label>
-                    <input type="number" min="1900" max="2099" class="form-control w_full"  name="year" id="year" >
+                    <input type="number" min="1000" max="2100" class="form-control w_full"  name="year" id="year" >
                 </div>
             </div>
 
             <div class="d-inline-flex w_full">
                 <div class="mb-3 space_between w_full">
                     <label for="colour" class="form-label">Price</label>
-                    <input type="number" class="form-control w_full"  name="price" id="price" >
+                    <input type="number" step="0" class="form-control w_full"  name="price" id="price" >
                 </div>
 
                 <div class="mb-3 w_full">
@@ -201,6 +201,16 @@ export default {
 }
 h3{
     font-weight: bold;
+}
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type=number]{
+    -moz-appearance: textfield;
 }
 
 @media screen and (max-width:800px){
