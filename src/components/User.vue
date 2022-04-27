@@ -11,13 +11,13 @@
         </section>
         <section class="usercontent"> 
             <h3>{{user.name}}</h3>
-            <span>@{{user.username}}</span>
+            <span id="username">@{{user.username}}</span>
             <p>{{user.biography}}</p>
             <section class="inforow">
-                <div><label>Email</label> <span>{{user.email}}</span></div>
+                <div class="infoitem"><label>Email</label> <span>{{user.email}}</span></div>
             </section>
             <section class="inforow">
-                <div><label>Location</label> <span>{{user.location}}</span></div>
+                <div class="infoitem"><label>Location</label> <span>{{user.location}}</span></div>
             </section>
 
             <section class="inforow">
@@ -209,8 +209,24 @@ section.inforow{
    width: 90%;
 }
 
+div.infoitem{
+    width: 50%;
+}
+
+div.infoitem span{
+    text-align: left;
+}
+
 section.inforow div span{
     margin-left: 4em;
+}
+
+span#username, p, label{
+    color: #949599;
+}
+span#username{
+
+    font-weight: bold;
 }
 
 div.usercard section.userphoto img{
