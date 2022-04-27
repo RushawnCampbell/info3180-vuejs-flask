@@ -113,7 +113,6 @@ export default {
             return response.json();
         })
         .then(function(data) {
-            console.log(data);
             self.cars = data;
         });
     },
