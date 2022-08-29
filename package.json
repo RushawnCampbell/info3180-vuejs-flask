@@ -1,3 +1,4 @@
+
 {
   "name": "info3180-lab7-vuejs-starter",
   "version": "0.0.0",
@@ -7,6 +8,7 @@
     "preview": "vite preview --port 5050"
   },
   "dependencies": {
+    "dotenv": "^16.0.1",
     "vue": "^3.2.31",
     "vue-router": "^4.0.12"
   },

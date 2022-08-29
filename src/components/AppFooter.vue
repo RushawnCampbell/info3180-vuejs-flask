@@ -1,7 +1,7 @@
 <template>
-      <footer class="mt-5">
+      <footer class="mt-5 bg-dark">
           <div class="container">
-              <p>Copyright &copy; {{ year }} Flask Inc.</p>
+              <p>&copy; {{ year }} Apex Management Services Ltd. | All Rights Reserved</p>
           </div>
       </footer>
 </template>
@@ -17,6 +17,12 @@ export default {
 </script>
 
 <style>
-/* Add any component specific styles here */
+    footer{
+        color: whitesmoke;
+        position: fixed;
+        bottom:0;
+        width: 100%;
+        padding: 1.5em;
+    }
 
 </style>

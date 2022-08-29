@@ -1,44 +1,29 @@
-"""
-Flask Documentation:     https://flask.palletsprojects.com/
-Jinja2 Documentation:    https://jinja.palletsprojects.com/
-Werkzeug Documentation:  https://werkzeug.palletsprojects.com/
-This file creates your application.
-"""
-
 from app import app, db, login_manager
 from flask import request, jsonify, send_file, send_from_directory
 from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash
-from app.models import Users
-from app.models import Cars
-from app.models import Favourites
-from app.forms import LoginForm
-from app.forms import RegisterForm
-from app.forms import CarForm
+
+from app.models import Users, Personalinfo, Employerinfo, Kininfo
+from app.forms import SigninForm, SigninForm
+
+
 from flask_wtf.csrf import generate_csrf
-from werkzeug.utils import secure_filename
-import os
-import datetime 
-import jwt
-import locale
-import json
+import os, json, time, datetime, jwt, locale
+import numpy as numpi
+
 locale.setlocale( locale.LC_ALL, 'en_CA.UTF-8' )
 
 
-###
-# Routing for your application.
-###
 
 @app.route('/')
 def index():
     return send_file(os.path.join('../dist/', 'index.html'))
 
 
-@app.route('/api/register', methods=['POST'])
-def register():
-    
+""" @app.route('/api/signup', methods=['POST'])
+def signup():
     if request.method == 'POST':
-        formobject =  RegisterForm()
+        formobject =  SignupForm()
         if formobject.validate_on_submit():
             fileobj = request.files['photo']
             cleanedname = secure_filename(fileobj.filename)
@@ -48,7 +33,7 @@ def register():
                 newuser = Users(formobject.username.data,formobject.password.data, formobject.fullname.data, formobject.email.data,formobject.location.data, formobject.biography.data, cleanedname, date_joined )
                 db.session.add(newuser)
                 db.session.commit()
-                userid =  db.session.query(Users.id).all()[-1][0]
+                userid =  db.session.query(Users.id).distinct().all()[-1][0]
                 feedback= {
                         "id": userid,
                         "username": formobject.username.data,
@@ -61,14 +46,32 @@ def register():
                     }
                 return jsonify(feedback),201
         return jsonify(form_errors(formobject)),200  
+"""
+@app.route('/api/addata', methods=['GET'])
+def addata():
+    fileobj = open('/home/antidragon/Desktop/Python Dev/Skiptrace/uploads/data.json')
+    data =  json.load(fileobj)
+    count= 0
+    for dobj in data:
+        if count == 100:
+            count = 0
+            time.sleep(3)
+        rec = Personalinfo(first_name = dobj['FIRST NAME'], last_name =  dobj['SURNAME'], middle_name =  dobj['MIDDLE NAME'], dob= dobj['DOB'], street_address=  dobj['ADDRESS'], city= dobj['CITY'], country= dobj['COUNTRY'])
+        db.session.add(rec)
+        db.session.commit()
 
-@app.route('/api/auth/login', methods=['POST'])
-def login():
-    loginform = LoginForm()
+    return jsonify({
+        "message": "Success",
+    }),200
+
+
+@app.route('/api/auth/signin', methods=['POST'])
+def signin():
+    formobject = SigninForm()
     if request.method == "POST":
-        if  loginform.validate_on_submit():
-            username = loginform.username.data
-            password = loginform.password.data
+        if  formobject.validate_on_submit():
+            username = formobject.username.data
+            password =formobject.password.data
             user = Users.query.filter_by(username=username).first()
             if user is not None and check_password_hash(user.password, password):
                 login_user(user)
@@ -82,11 +85,237 @@ def login():
                 return jsonify({
                         "message": "Login failed, check your information and try again.",
                     }),401
-                   
 
-@app.route('/api/auth/logout', methods=['GET'])
+@app.route('/api/quicksearch', methods=['GET'])
 @login_required
-def logout():
+def quicksearch():
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'].lower() == current_user.username.lower():
+        
+            if request.method == 'GET':
+                params = request.args
+
+                quicksearch = params.get('quicksearchquery')
+                if quicksearch == "" or quicksearch == " ":
+                    return jsonify({"message":"You didn\'t search for anything."}),201
+
+                queryarray = quicksearch.split(" ")
+                resultantrecords= []
+                searchedrecords =[]
+
+                for entry in  queryarray:
+                    tempsearch= Personalinfo.query.filter(Personalinfo.first_name == entry.lower() or Personalinfo.first_name == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+
+                    tempsearch= Personalinfo.query.filter(Personalinfo.middle_name == entry.lower() or Personalinfo.middle_name == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+
+                    tempsearch= Personalinfo.query.filter(Personalinfo.last_name == entry.lower() or Personalinfo.last_name == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+
+                    tempsearch= Personalinfo.query.filter(Personalinfo.nib == entry.lower() or Personalinfo.nib == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+
+                    tempsearch= Personalinfo.query.filter(Personalinfo.dob == entry.lower() or Personalinfo.dob == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+
+                    tempsearch= Personalinfo.query.filter(Personalinfo.gender == entry.lower() or Personalinfo.gender == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+                    tempsearch= Personalinfo.query.filter(Personalinfo.marital_status== entry.lower() or Personalinfo.marital_status == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+
+                    tempsearch= Personalinfo.query.filter(Personalinfo.home_phone == quicksearch).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+
+                    tempsearch= Personalinfo.query.filter(Personalinfo.cell_phone == quicksearch).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+                    tempsearch= Personalinfo.query.filter(Personalinfo.work_phone == quicksearch).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+                    tempsearch= Personalinfo.query.filter(Personalinfo.street_address == quicksearch).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+                    
+                    tempsearch= Personalinfo.query.filter(Personalinfo.po_box == entry.lower() or Personalinfo.po_box == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+                    tempsearch= Personalinfo.query.filter(Personalinfo.city == entry.lower() or Personalinfo.city == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+
+                    tempsearch= Personalinfo.query.filter(Personalinfo.country == entry.lower() or Personalinfo.country == entry.upper()).distinct().all()
+                    if tempsearch not in searchedrecords:
+                        searchedrecords.append(tempsearch)
+
+                if len(searchedrecords) == 0:
+                    return jsonify({"message": "No Records Found"}),201 
+                    
+    
+                for record in searchedrecords:
+                    if len(record) == 0:
+                            continue
+                    for record in record:
+                        resultantrecords.append({
+                        "record_id": record.record_id,
+                        "first_name" : record.first_name,
+                        "middle_name" : record.middle_name,
+                        "last_name" : record.last_name,
+                        "nib": record.nib,
+                        "dob": record.dob,
+                        "gender": record.gender,
+                        "marital_status": record.marital_status,
+                        "home_phone": record.home_phone,
+                        "cell_phone": record.cell_phone,
+                        "work_phone": record.work_phone,
+                        "street_address": record.street_address,
+                        "po_box": record.po_box,
+                        "city" : record.city,
+                        "country": record.country
+                    })
+                return jsonify(resultantrecords),200
+    except:
+        return jsonify({"Something went wrong, tray again later."}),401
+
+    return ''
+
+
+@app.route('/api/advancesearch', methods=['GET'])
+@login_required
+def advancesearch():
+
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        resultantrecords= []
+        searchedrecords = []
+        tempsearch =[]
+        if decoded['sub'].lower() == current_user.username.lower():
+            if request.method == 'GET':
+                params = []
+                for arg, argval in request.args.items():
+                    if argval == "" or argval == " " or argval is  None:
+                        continue
+                    else:
+                        params.append((arg, argval))
+
+                if len(params) == 0:
+                    return jsonify({"message": "You didn't search for anything."}),201 
+
+
+                if len(params) == 1:
+                    for par in params:
+                        if par[1] == "" or par[1]== " " or par[1] is  None:
+                            return jsonify({"message": "You didn't search for anything."}),201 
+                        else:
+                            if par[0] == "firstname":
+                                searchedrecords = Personalinfo.query.filter(Personalinfo.first_name == par[1].lower() ).distinct().all()
+                            elif par[0] == "lastname":
+                                searchedrecords = Personalinfo.query.filter(Personalinfo.last_name == par[1].lower() ).distinct().all()
+                            
+                           
+                            if len(searchedrecords) == 0:
+                                return jsonify({"message": "No Records Found"}),201 
+                            else:
+                                for record in searchedrecords:
+                                    resultantrecords.append({
+                                        "record_id": record.record_id,
+                                        "first_name" : record.first_name,
+                                        "middle_name" : record.middle_name,
+                                        "last_name" : record.last_name,
+                                        "nib": record.nib,
+                                        "dob": record.dob,
+                                        "gender": record.gender,
+                                        "marital_status": record.marital_status,
+                                        "home_phone": record.home_phone,
+                                        "cell_phone": record.cell_phone,
+                                        "work_phone": record.work_phone,
+                                        "street_address": record.street_address,
+                                        "po_box": record.po_box,
+                                        "city" : record.city,
+                                        "country": record.country
+                                    })
+                                return jsonify(resultantrecords),200
+
+
+
+                for par in params:
+
+                    if par[0] == "firstname":
+                        tempsearch.append(Personalinfo.query.filter(Personalinfo.first_name == par[1].lower() ).distinct().all())
+                        
+                    if par[0] == "lastname":
+                        tempsearch.append(Personalinfo.query.filter(Personalinfo.last_name == par[1].lower() ).distinct().all())
+
+                    if par[0] == "dob":
+                        tempsearch.append(Personalinfo.query.filter(Personalinfo.dob == par[1].lower() ).distinct().all())
+                        
+
+                    if par[0] == "nib":
+                        tempsearch.append(Personalinfo.query.filter(Personalinfo.nib == par[1].lower() ).distinct().all())
+                        
+            
+                if len(tempsearch)== 2:
+                    searchedrecords = intersection(tempsearch[0], tempsearch[1]) 
+                elif len(tempsearch) > 2:
+                    searchedrecords = intersection(tempsearch[0], tempsearch[1]) 
+                    for i in range(len(tempsearch)):
+                        if i == 0 or i==1:
+                            continue
+                        searchedrecords = intersection(searchedrecords, tempsearch[i]) 
+                
+                
+                if len(searchedrecords) == 0:
+                    return jsonify({"message": "No Records Found"}),201 
+                        
+
+                for record in searchedrecords:
+                    resultantrecords.append({
+                        "record_id": record.record_id,
+                        "first_name" : record.first_name,
+                        "middle_name" : record.middle_name,
+                        "last_name" : record.last_name,
+                        "nib": record.nib,
+                        "dob": record.dob,
+                        "gender": record.gender,
+                        "marital_status": record.marital_status,
+                        "home_phone": record.home_phone,
+                        "cell_phone": record.cell_phone,
+                        "work_phone": record.work_phone,
+                        "street_address": record.street_address,
+                        "po_box": record.po_box,
+                        "city" : record.city,
+                        "country": record.country
+                    })
+                
+    
+                return jsonify(resultantrecords),200
+    except:
+        return jsonify({"Something went wrong, tray again later."}),401
+
+    return ''
+
+def intersection(lst1, lst2):
+    lst3 = [value for value in lst1 if value in lst2]
+    return lst3
+
+@app.route('/api/auth/signout', methods=['GET'])
+@login_required
+def signout():
         if request.method == 'GET':
             logout_user()
             return jsonify({
@@ -95,238 +324,8 @@ def logout():
 
 @login_manager.user_loader
 def load_user(id):
-    return Users.query.get(int(id))
+    return Users.query.get(id)
 
-@app.route('/api/cars', methods=['GET', 'POST'])
-@login_required
-def cars():
-    user_token= request.headers['Authorization'].split(' ')[1]
-    
-    if not user_token:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-    try:
-        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
-        if decoded['sub'] == current_user.username:
-            if request.method == "GET":
-                cars = []
-                returnedcars = Cars.query.all()
-                for car in returnedcars:
-                    cars.append({
-                        "id": car.id,
-                        "description": car.description,
-                        "year": car.year,
-                        "make": car.make,
-                        "model": car.model,
-                        "colour": car.colour,
-                        "transmission": car.transmission,
-                        "car_type": car.car_type,
-                        "price": locale.currency(car.price, grouping= True),
-                        "photo": car.photo,
-                        "user_id": current_user.id
-                    })
-                if len(cars) >=  3:
-                    cars = [cars[-3], cars[-2], cars[-1]]
-                return jsonify(cars),200
-            elif request.method == "POST":
-                formobject =  CarForm()
-                if formobject.validate_on_submit():
-                    fileobj = request.files['photo']
-                    cleanedname = secure_filename(fileobj.filename)
-                   
-                    fileobj.save(os.path.join(app.config['UPLOAD_FOLDER'], cleanedname))
-                    if fileobj and (cleanedname != "" and cleanedname != " "):
-                        newcar = Cars(formobject.description.data, formobject.make.data, formobject.model.data,formobject.colour.data, formobject.year.data, formobject.transmission.data, formobject.car_type.data, formobject.price.data, cleanedname, current_user.id )
-                        db.session.add(newcar)
-                        db.session.commit()
-                        feedback = {
-                            "description": formobject.description.data,
-                            "year": formobject.year.data,
-                            "make": formobject.make.data,
-                            "model": formobject.model.data,
-                            "colour": formobject.colour.data,
-                            "transmission": formobject.transmission.data,
-                            "type": formobject.car_type.data,
-                            "price": formobject.price.data,
-                            "photo": cleanedname,
-                            "user_id": current_user.id
-                        }
-                        return jsonify(feedback),201
-                return jsonify(form_errors(formobject)),200 
-                        
-    except:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-
-@app.route('/api/cars/<int:car_id>', methods=['GET'])
-@login_required
-def singlecar(car_id):
-
-    user_token= request.headers['Authorization'].split(' ')[1]
-    if not user_token:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-    try:
-        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
-        if decoded['sub'] == current_user.username:
-            if request.method == 'GET':
-                returnedcar = Cars.query.filter_by(id=car_id).first()
-                car = {
-                    "id": returnedcar.id,
-                    "description": returnedcar.description,
-                    "year": returnedcar.year,
-                    "make": returnedcar.make,
-                    "model": returnedcar.model,
-                    "colour": returnedcar.colour,
-                    "transmission": returnedcar.transmission,
-                    "car_type": returnedcar.car_type,
-                    "price": locale.currency(returnedcar.price, grouping= True),
-                    "photo": returnedcar.photo,
-                    "user_id": returnedcar.user_id
-                }
-            return jsonify(car),200
-    except:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-
-@app.route('/api/cars/<int:car_id>/favourite', methods=["POST"])
-@login_required
-def favourite(car_id):
-    user_token= request.headers['Authorization'].split(' ')[1]
-    if not user_token:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-    try:
-        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
-        if decoded['sub'] == current_user.username:
-            if request.method == "POST":
-                car = json.loads(request.data)
-                current_favorites = Favourites.query.all()
-                for fave in current_favorites:
-                    if fave.user_id == int(car['user_id'])  and fave.car_id == car['car_id']:
-                        Favourites.query.filter_by(car_id=car['car_id'], user_id = int(car['user_id']) ).delete()
-                        db.session.commit()
-                        return jsonify({"message": "Car removed from Favourites"}),201
-                    
-                favourite = Favourites(car['car_id'], car['user_id'])
-                db.session.add(favourite)
-                db.session.commit()
-                feedback = {
-                    "message": "Car Successfully Favourited",
-                    "car_id": car['car_id']
-                }
-                return jsonify(feedback),200
-    except:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-
-@app.route('/api/search', methods=['GET'])
-@login_required
-def search():
-    user_token= request.headers['Authorization'].split(' ')[1]
-    if not user_token:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-    try:
-        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
-        if decoded['sub'] == current_user.username:
-            if request.method == 'GET':
-                params = request.args
-                makedata = params.get('searchmake')
-                modeldata = params.get('searchmodel')
-                cars= []
-                if makedata != '' and modeldata !='':
-                    searchedcars = Cars.query.filter(Cars.make.ilike("%" +makedata + "%")).all()
-
-                if makedata != '' and modeldata == '':
-                    searchedcars = Cars.query.filter(Cars.make.ilike("%" +makedata + "%")).all()
-
-                if makedata == '' and modeldata != '':
-                    searchedcars = Cars.query.filter(Cars.model.ilike("%" + modeldata + "%")).all()
-                
-                if makedata == '' and modeldata =='':
-                    searchedcars = Cars.query.all()
-                
-                for car in searchedcars:
-
-                    if car in cars:
-                        continue
-                    cars.append(
-                        {
-                            "id": car.id,
-                            "description": car.description,
-                            "year": car.year,
-                            "make": car.make,
-                            "model": car.model,
-                            "colour": car.colour,
-                            "transmission": car.transmission,
-                            "car_type": car.car_type,
-                            "price": locale.currency(car.price, grouping= True),
-                            "photo": car.photo,
-                            "user_id": car.user_id
-                        }
-
-                    )
-                if len(searchedcars) == 0:
-                    return jsonify({'message': 'No Results Found'}),201
-                return jsonify(cars),200
-    except:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-
-    return ''
-
-@app.route('/api/users/<int:user_id>', methods=['GET'])
-@login_required
-def user(user_id):
-    user_token= request.headers['Authorization'].split(' ')[1]
-    if not user_token:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-    try:
-        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
-        if decoded['sub'] == current_user.username:
-            if request.method == 'GET':
-                returneduser = Users.query.filter_by(id=user_id).first()
-                user = {
-                    "id": returneduser.id,
-                    "username": returneduser.username,
-                    "name": returneduser.name,
-                    "photo": returneduser.photo,
-                    "email": returneduser.email,
-                    "location": returneduser.location,
-                    "biography": returneduser.biography,
-                    "date_joined": returneduser.date_joined
-                }
-            return jsonify(user),200
-    except:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-
-@app.route('/api/users/<int:user_id>/favourites', methods=['GET'])
-@login_required
-def favourites(user_id):
-    user_token= request.headers['Authorization'].split(' ')[1]
-    if not user_token:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-    try:
-        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
-        if decoded['sub'] == current_user.username:
-            if request.method == 'GET':
-                returnedcars = []
-                favourites = Favourites.query.filter_by(user_id=user_id).all()
-                for favourite  in favourites:
-                    tempcar = Cars.query.filter_by(id = favourite.car_id).first()
-                    tempcarinfo={
-                        "id": tempcar.id,
-                        "description": tempcar.description,
-                        "year": tempcar.year,
-                        "make": tempcar.make,
-                        "model": tempcar.model,
-                        "colour": tempcar.colour,
-                        "transmission": tempcar.transmission,
-                        "car_type": tempcar.car_type,
-                        "price": locale.currency(tempcar.price, grouping= True),
-                        "photo": os.path.join(app.config['UPLOAD_FOLDER'], tempcar.photo)[1:],
-                        "user_id": tempcar.user_id
-                    }
-                    if tempcarinfo in returnedcars:
-                        continue
-                    else:
-                        returnedcars.append(tempcarinfo) 
-                return jsonify(returnedcars),200
-    except:
-        return jsonify({"message": "Access token is missing or invalid"}),401
 
 @app.route('/<file_name>.txt')
 def send_text_file(file_name):
@@ -338,12 +337,13 @@ def send_text_file(file_name):
 def get_csrf():
     return jsonify({'csrf_token': generate_csrf()})
 
+
 @app.route('/api/uid', methods=['GET'])
 @login_required
 def uid():
     user_token= request.headers['Authorization'].split(' ')[1]
     if not user_token:
-         return jsonify({"message": "Access token is missing or invalid"}),401
+        return jsonify({"message": "Access token is missing or invalid"}),401
     try:
         decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
         if decoded['sub'] == current_user.username:
@@ -352,27 +352,6 @@ def uid():
     except:
         return jsonify({"message": "Access token is missing or invalid"}),401 
 
-@app.route('/api/checkfavourite/<int:car_id>', methods= ['GET'])
-@login_required
-def checkfavourite(car_id):
-    user_token= request.headers['Authorization'].split(' ')[1]
-    if not user_token:
-        return jsonify({"message": "Access token is missing or invalid"}),401
-    try:
-        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
-        if decoded['sub'] == current_user.username:
-            if request.method == "GET":
-                favourited= False
-                current_favorites = Favourites.query.all()
-                for fave in current_favorites:
-                    if fave.user_id == current_user.id  and fave.car_id == car_id:
-                        favourited = True
-                if favourited:
-                    return jsonify({"message": True}),200
-                else:
-                    return jsonify({"message": False}),200
-    except:
-        return jsonify({"message": False}),401
 
 def form_errors(form):
     error_messages = []

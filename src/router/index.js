@@ -17,51 +17,41 @@ const router = createRouter({
         },
 
         {
-            path: '/login',
-            name: 'login',
+            path: '/signin',
+            name: 'signin',
             component: () =>
-                import ('../views/LoginView.vue')
+                import ('../views/SigninView.vue')
 
         },
 
         {
-            path: '/logout',
-            name: 'logout',
+            path: '/signout',
+            name: 'signout',
             component: () =>
-                import ('../views/LogoutView.vue')
+                import ('../views/SignoutView.vue')
 
         },
 
         {
-            path: '/register',
-            name: 'register',
+            path: '/signup',
+            name: 'signup',
             component: () =>
-                import ('../views/RegisterView.vue')
+                import ('../views/SignupView.vue')
         },
+
         {
-            path: '/explore',
-            name: 'explore',
+            path: '/search',
+            name: 'search',
             component: () =>
-                import ('../views/ExploreView.vue')
+                import ('../views/SearchView.vue')
         },
+
         {
-            path: '/users/:user_id',
-            name: 'singleuser',
+            path: '/singleresult',
+            name: 'singleresult',
             component: () =>
-                import ('../views/UserView.vue')
-        },
-        {
-            path: '/cars/new',
-            name: 'newcar',
-            component: () =>
-                import ('../views/NewCarView.vue')
-        },
-        {
-            path: '/cars/:car_id',
-            name: 'singlecarview',
-            component: () =>
-                import ('../views/SingleCarView.vue')
-        },
+                import ('../views/SingleresView.vue')
+        }
     ]
 })
 

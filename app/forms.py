@@ -4,20 +4,20 @@ from wtforms import StringField, TextAreaField, EmailField, PasswordField, Selec
 from wtforms.validators import DataRequired, Email, InputRequired
 
 
-class LoginForm(FlaskForm):
+class SigninForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
 
-class RegisterForm(FlaskForm):
+class SignupForm(FlaskForm):
     username = StringField('Username', validators=[InputRequired()])
     password = PasswordField('Password', validators=[InputRequired()])
     fullname = StringField("Fullname", validators=[DataRequired()])
     email = EmailField("Email Address", validators=[DataRequired(), Email()])
-    location = StringField("Location", validators=[DataRequired()])
-    biography = TextAreaField("Biography", validators=[DataRequired()], render_kw={"rows": "3"})
-    photo = FileField('image upload',validators=[FileRequired(),FileAllowed(['jpg', 'png', 'jpeg'], 'Illegal file detected. You must enter an image')])
 
-class CarForm(FlaskForm):
+class QuickSearchForm(FlaskForm):
+    quicksearch = StringField('quicksearch', validators=[InputRequired()])
+
+"""class CarForm(FlaskForm):
     make = StringField('Make', validators=[InputRequired()])
     model = StringField('Model', validators=[InputRequired()])
     colour = StringField("Colour", validators=[DataRequired()])
@@ -28,6 +28,4 @@ class CarForm(FlaskForm):
     description = TextAreaField("Description", validators=[DataRequired()], render_kw={"rows": "3"})
     photo = FileField('image upload',validators=[FileRequired(),FileAllowed(['jpg', 'png', 'jpeg'], 'Illegal file detected. You must enter an image')])
 
-class SearchForm(FlaskForm):
-    make = StringField('Make', validators=[InputRequired()])
-    model = StringField('Model', validators=[InputRequired()])
+"""
