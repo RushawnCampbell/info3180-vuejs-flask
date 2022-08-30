@@ -80,7 +80,7 @@ export default {
                 }
               })
         },
-        getCsrfToken() {
+        /*getCsrfToken() {
                 let self = this;
                 fetch('/api/csrf-token')
                 .then((response) => response.json())
@@ -88,11 +88,11 @@ export default {
                     self.csrf_token = data.csrf_token;
                 })
             
-        }
+        }*/
     
     },
     created() {
-       this.getCsrfToken();
+       /*this.getCsrfToken();*/
     }
 };
 </script>
