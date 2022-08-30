@@ -3,7 +3,7 @@ CREATE DATABASE skiptrace;
 
 USE skiptrace;
 
-GRANT ALL PRIVILEGES on *.* to skipuser1@localhost;
+
 
 CREATE TABLE Users(
     user_id VARCHAR(255) PRIMARY KEY NOT NULL,

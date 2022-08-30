@@ -4749,7 +4749,7 @@ document.querySelector("section.resultcontainer").appendChild(recorditem);
             this.isresult = sessionStorage.getItem('isresult');
             this.issingle = sessionStorage.getItem('issingle');
        },0);
-       //this.addata();
+       this.addata();
     }
 };
 </script>
