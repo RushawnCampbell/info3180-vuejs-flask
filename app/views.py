@@ -342,7 +342,7 @@ def get_csrf():
     return jsonify({'csrf_token': generate_csrf()})
 
 
-"""@app.route('/api/uid', methods=['GET'])
+@app.route('/api/uid', methods=['GET'])
 @login_required
 def uid():
     user_token= request.headers['Authorization'].split(' ')[1]
@@ -354,7 +354,7 @@ def uid():
             if request.method == "GET":
                 return jsonify({"message": current_user.id}),200
     except:
-        return jsonify({"message": "Access token is missing or invalid"}),401 """
+        return jsonify({"message": "Access token is missing or invalid"}),401 
 
 
 def form_errors(form):

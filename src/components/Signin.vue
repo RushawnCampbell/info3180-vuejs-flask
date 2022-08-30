@@ -39,7 +39,7 @@ export default {
                 body: form_data,
                 headers: {
                     "Accept": "application/json",
-                    /*'X-CSRFToken': this.csrf_token*/
+                    'X-CSRFToken': this.csrf_token
                 }
               })
               .then((response)=>{
@@ -54,7 +54,7 @@ export default {
                       inputfields.forEach((inp)=> {
                       inp.value = "";
                         });
-                      /*fetch('/api/uid', {
+                      fetch('/api/uid', {
                         method: 'GET',
                         headers: {
                             'Accept': 'application/json',
@@ -66,7 +66,7 @@ export default {
                         })
                         .then(function(data) {
                             sessionStorage.setItem('uid', data.message);
-                        });*/
+                        });
 
                         this.$router.push('/search')
                        
@@ -80,7 +80,7 @@ export default {
                 }
               })
         },
-        /*getCsrfToken() {
+        getCsrfToken() {
                 let self = this;
                 fetch('/api/csrf-token')
                 .then((response) => response.json())
@@ -88,11 +88,11 @@ export default {
                     self.csrf_token = data.csrf_token;
                 })
             
-        }*/
+        }
     
     },
     created() {
-       /*this.getCsrfToken();*/
+       this.getCsrfToken();
     }
 };
 </script>
