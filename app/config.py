@@ -9,5 +9,5 @@ class Config(object):
     DEBUG = False
     SECRET_KEY = os.environ.get('SECRET_KEY','')
     UPLOAD_FOLDER = os.environ.get('UPLOAD_FOLDER','')
-    SQLALCHEMY_DATABASE_URI = os.environ.get('D_URL', '')
+    SQLALCHEMY_DATABASE_URI = os.environ.get('D_URL', '').replace('postgres://', 'postgresql://')
     SQLALCHEMY_TRACK_MODIFICATIONS = False 

@@ -46,7 +46,7 @@ def signup():
                     }
                 return jsonify(feedback),201
         return jsonify(form_errors(formobject)),200  
-"""
+
 @app.route('/api/addata', methods=['GET'])
 def addata():
     fileobj = open('/home/antidragon/Desktop/Python Dev/Skiptrace/uploads/data.json')
@@ -64,7 +64,7 @@ def addata():
     return jsonify({
         "message": "Success",
     }),200
-
+"""
 
 @app.route('/api/auth/signin', methods=['POST'])
 def signin():
