@@ -59,6 +59,7 @@ def addata():
         rec = Personalinfo(first_name = dobj['FIRST NAME'], last_name =  dobj['SURNAME'], middle_name =  dobj['MIDDLE NAME'], dob= dobj['DOB'], street_address=  dobj['ADDRESS'], city= dobj['CITY'], country= dobj['COUNTRY'])
         db.session.add(rec)
         db.session.commit()
+        print("added")
 
     return jsonify({
         "message": "Success",
@@ -67,6 +68,9 @@ def addata():
 
 @app.route('/api/auth/signin', methods=['POST'])
 def signin():
+    """newuser  = Users('RC2', 'Nemrac', 'Rushawn', 'Campbell', 'shoutme.sean@xenox.com','Dragon#24', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") )
+    db.session.add(newuser)
+    db.session.commit()"""
     formobject = SigninForm()
     if request.method == "POST":
         if  formobject.validate_on_submit():
