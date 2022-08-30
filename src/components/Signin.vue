@@ -39,7 +39,7 @@ export default {
                 body: form_data,
                 headers: {
                     "Accept": "application/json",
-                    'X-CSRFToken': this.csrf_token
+                    /*'X-CSRFToken': this.csrf_token*/
                 }
               })
               .then((response)=>{
