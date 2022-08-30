@@ -54,7 +54,7 @@ export default {
                       inputfields.forEach((inp)=> {
                       inp.value = "";
                         });
-                      fetch('/api/uid', {
+                      /*fetch('/api/uid', {
                         method: 'GET',
                         headers: {
                             'Accept': 'application/json',
@@ -66,7 +66,7 @@ export default {
                         })
                         .then(function(data) {
                             sessionStorage.setItem('uid', data.message);
-                        });
+                        });*/
 
                         this.$router.push('/search')
                        
