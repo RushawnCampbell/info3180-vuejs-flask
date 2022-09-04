@@ -309,13 +309,48 @@ def advancesearch():
     
                 return jsonify(resultantrecords),200
     except:
-        return jsonify({"Something went wrong, tray again later."}),401
+        return jsonify({"message": "Something went wrong, try again later."}),401
 
     return ''
 
 def intersection(lst1, lst2):
     lst3 = [value for value in lst1 if value in lst2]
     return lst3
+
+
+@app.route('/api/getrecord', methods=['GET'])
+@login_required
+def getrecord():
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'].lower() == current_user.username.lower():
+            if request.method == 'GET':
+                param = request.args
+                single = param.get('recid')
+                fetchedrecord = Personalinfo.query.filter(Personalinfo.record_id == single).distinct().first()
+                return jsonify({
+                    "record_id": fetchedrecord.record_id,
+                    "first_name" : fetchedrecord.first_name,
+                    "middle_name" : fetchedrecord.middle_name,
+                    "last_name" : fetchedrecord.last_name,
+                    "nib": fetchedrecord.nib,
+                    "dob": fetchedrecord.dob,
+                    "gender": fetchedrecord.gender,
+                    "marital_status": fetchedrecord.marital_status,
+                    "home_phone": fetchedrecord.home_phone,
+                    "cell_phone": fetchedrecord.cell_phone,
+                    "work_phone": fetchedrecord.work_phone,
+                    "street_address": fetchedrecord.street_address,
+                    "po_box": fetchedrecord.po_box,
+                    "city" : fetchedrecord.city,
+                    "country": fetchedrecord.country
+                })
+    except:
+        return jsonify({"message": "Something went wrong, try again later."}),401
+
 
 @app.route('/api/auth/signout', methods=['GET'])
 @login_required

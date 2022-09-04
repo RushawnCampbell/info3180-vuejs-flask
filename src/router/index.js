@@ -47,10 +47,17 @@ const router = createRouter({
         },
 
         {
-            path: '/singleresult',
+            path: '/mainresult',
+            name: 'mainresult',
+            component: () =>
+                import ('../views/MainResultView.vue')
+        },
+
+        {
+            path: '/singleresult/:recid',
             name: 'singleresult',
             component: () =>
-                import ('../views/SingleresView.vue')
+                import ('../views/SingleResultView.vue')
         }
     ]
 })
