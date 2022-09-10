@@ -50,23 +50,12 @@ export default {
                   
                   if (stat == 200){
                       sessionStorage.setItem('token', data.token);
+                      sessionStorage.setItem('first_name', data.first_name);
+                      sessionStorage.setItem('role', data.role);
                       sessionStorage.setItem('isauth', true);
                       inputfields.forEach((inp)=> {
                       inp.value = "";
                         });
-                      /*fetch('/api/uid', {
-                        method: 'GET',
-                        headers: {
-                            'Accept': 'application/json',
-                            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
-                        }
-                        })
-                        .then(function(response) {
-                            return response.json();
-                        })
-                        .then(function(data) {
-                            sessionStorage.setItem('uid', data.message);
-                        });*/
 
                         this.$router.push('/search')
                        

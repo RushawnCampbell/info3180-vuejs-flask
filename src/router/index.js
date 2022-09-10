@@ -58,7 +58,19 @@ const router = createRouter({
             name: 'singleresult',
             component: () =>
                 import ('../views/SingleResultView.vue')
-        }
+        },
+        {
+            path: '/adminhub',
+            name: 'adminhub',
+            component: () =>
+                import ('../views/AdminView.vue')
+        },
+        {
+            path: '/singlemod/:recid',
+            name: 'singlemod',
+            component: () =>
+                import ('../views/SingleModView.vue')
+        },
     ]
 })
 

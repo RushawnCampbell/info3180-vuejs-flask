@@ -33,6 +33,10 @@
               <RouterLink id="search" class="nav-link" to="/search">SEARCH</RouterLink>
             </li>
 
+            <li id="search" v-if=isadmin class="nav-item">
+              <RouterLink id="search" class="nav-link" to="/adminhub">ADMIN HUB</RouterLink>
+            </li>
+
             <li id="signout" v-if=isauth class="nav-item">
               <RouterLink  id="signout" class="nav-link" to="/signout">SIGN OUT </RouterLink>
             </li>
@@ -55,7 +59,8 @@ export default {
     data() {
         return {
           uid: sessionStorage.getItem('uid'),
-          isauth: sessionStorage.getItem('isauth')
+          isauth: sessionStorage.getItem('isauth'),
+          isadmin: '',
         };
     },
     created(){
@@ -64,11 +69,25 @@ export default {
     setInterval(()=>{
        if (sessionStorage.getItem('isauth') == 'true'){
           self.isauth = true;
+          if (sessionStorage.getItem('role') == "Admin"){
+              this.isadmin =  true;
+          }
+          else{
+              this.isadmin = false;
+          }
        }
        else{
           self.isauth = false;
        }
     }, 500);
+
+
+    setInterval(()=>{
+       
+          if (sessionStorage.getItem('isauth') == "false"){
+              this.isadmin =  false;
+          }
+    }, 0);
     
     }
 }

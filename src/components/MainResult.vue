@@ -1,5 +1,7 @@
 <template>
 
+        <section class="lightbox"><h3>CHECKING FOR RECORD UPDATES ...</h3></section>
+
         <section v-if="isresults" id="msg" class=" form-control alert " >
             <span>{{messages}}</span>  <button v-on:click= "searchagain" id="searchagain" class=" btn btn-success"> SEARCH AGAIN</button>
         </section>
@@ -12,12 +14,11 @@
                 <div class="rowinfo"><span class="fieldtitle">Last Name</span> <span> {{rec.last_name}} </span></div>
                 <div class="rowinfo"><span class="fieldtitle">D.O.B.</span> <span> {{rec.dob}} </span></div>
                 <div class="rowinfo"><span class="fieldtitle">NIB#</span> <span> {{rec.nib}} </span></div>
-                <div class="rowinfo"><span class="fieldtitle">Home Phone </span> <span> {{rec.home_phone}} </span></div>
                 <div class="rowinfo"><span class="fieldtitle">Cell Phone </span> <span> {{rec.cell_phone}} </span></div>
-                <div class="rowinfo"><span class="fieldtitle">Work Phone </span> <span> {{rec.work_phone}} </span></div>
                 <div class="rowinfo"><span class="fieldtitle">Street Address </span> <span> {{rec.street_address}} </span></div>
                 <div class="rowinfo"><span class="fieldtitle">City </span> <span> {{rec.city}} </span></div>
-                <RouterLink v-on:click="pageidreaper" :to= "`/singleresult/${rec.record_id}`" class=" btn btnsignin">MORE INFO </RouterLink>
+                <div class="rowinfo btnrow"><RouterLink v-on:click="pageidreaper" :to= "`/singleresult/${rec.record_id}`" class=" btn btnsignin">MORE INFO </RouterLink></div>
+                <div class="rowinfo btnrow"><RouterLink v-on:click="pageidreaper" :to= "`/singlemod/${rec.record_id}`" class=" btn btnmod ">MODIFY </RouterLink></div>
             </div>
 
 
@@ -168,6 +169,8 @@
                     this.messages = data.message;
                 }
 
+                document.querySelector("section.lightbox").style.display = "none";
+
             })
 
 
@@ -184,9 +187,39 @@
     color: #0E086D !important;
 }
 
+.btnmod {
+
+    background:#d9534f !important;
+    width: 9rem;
+    color: #fff;
+    font-weight: bold;
+}
+
 .regcolor{
     background: #0E086D !important;
     color: #fff !important;
+}
+
+section.lightbox{
+    background: rgba(211, 211, 2111, 0.5);
+    display: flex;
+    flex-flow: column wrap;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    z-index: 10;
+
+}
+
+section.lightbox h3{
+    color: #0E086D;
+}
+
+div.rowinfo{
+    margin-right: 1.2em;
 }
  
  </style>

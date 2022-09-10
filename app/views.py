@@ -4,14 +4,11 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash
 
 from app.models import Users, Personalinfo, Employerinfo, Kininfo
-from app.forms import SigninForm, SigninForm
+from app.forms import SigninForm, AddSkiptrace, ModSkiptrace
 
 
 from flask_wtf.csrf import generate_csrf
-import os, json, time, datetime, jwt, locale
-import numpy as numpi
-
-locale.setlocale( locale.LC_ALL, 'en_CA.UTF-8' )
+import os, json, time, datetime, jwt
 
 
 
@@ -46,7 +43,7 @@ def signup():
                     }
                 return jsonify(feedback),201
         return jsonify(form_errors(formobject)),200  
-
+"""
 @app.route('/api/addata', methods=['GET'])
 def addata():
     fileobj = open('/home/antidragon/Desktop/Python Dev/Skiptrace/uploads/data.json')
@@ -55,7 +52,7 @@ def addata():
     for dobj in data:
         if count == 100:
             count = 0
-            time.sleep(3)
+            time.sleep(1)
         rec = Personalinfo(first_name = dobj['FIRST NAME'], last_name =  dobj['SURNAME'], middle_name =  dobj['MIDDLE NAME'], dob= dobj['DOB'], street_address=  dobj['ADDRESS'], city= dobj['CITY'], country= dobj['COUNTRY'])
         db.session.add(rec)
         db.session.commit()
@@ -64,11 +61,11 @@ def addata():
     return jsonify({
         "message": "Success",
     }),200
-"""
+
 
 @app.route('/api/auth/signin', methods=['POST'])
 def signin():
-    """newuser  = Users('RC2', 'Nemrac', 'Rushawn', 'Campbell', 'shoutme.sean@xenox.com','Dragon#24', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") )
+    """newuser  = Users('RC44', 'Admin', 'Nemrac2', 'Rushawn', 'Campbell', 'shoutme.sean@renox.com','Dragon#24', datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") )
     db.session.add(newuser)
     db.session.commit()"""
     formobject = SigninForm()
@@ -83,6 +80,8 @@ def signin():
                 token  = jwt.encode({'sub':username,'initime': tokencreationtime}, app.config.get('SECRET_KEY'),algorithm='HS256')
                 return jsonify({
                         "message": "Login Successful",
+                        "first_name": user.first_name,
+                        "role": user.role,
                         "token": token
                     }),200
             else:
@@ -352,6 +351,198 @@ def getrecord():
         return jsonify({"message": "Something went wrong, try again later."}),401
 
 
+@app.route('/api/modrecord', methods=['POST'])
+@login_required
+def modrec():
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'].lower() == current_user.username.lower():
+            if request.method == 'POST':
+                formobject = ModSkiptrace()
+                param = request.args
+                single = param.get('recid')
+                ncm = True
+                fetchedrecord = Personalinfo.query.filter(Personalinfo.record_id == single).distinct().first()
+                if formobject.first_name.data != "" and formobject.first_name.data != " " and  formobject.first_name.data != None:
+                        if fetchedrecord.first_name != formobject.first_name.data:
+                            fetchedrecord.first_name = formobject.first_name.data
+                            ncm = False
+
+                if formobject.last_name.data != "" and formobject.last_name.data != " " and  formobject.last_name.data != None:
+                        if fetchedrecord.last_name != formobject.last_name.data:
+                            fetchedrecord.last_name = formobject.last_name.data
+                            ncm = False
+
+                if formobject.middle_name.data != "" and formobject.middle_name.data != " " and  formobject.middle_name.data != None:
+                        if fetchedrecord.middle_name != formobject.middle_name.data:
+                            fetchedrecord.middle_name = formobject.middle_name.data
+                            ncm = False
+        
+                if formobject.nib.data != "" and formobject.nib.data != " " and  formobject.nib.data != None:
+                        if fetchedrecord.nib != formobject.nib.data:
+                            fetchedrecord.nib = formobject.nib.data
+
+                if formobject.dob.data != "" and formobject.dob.data != " " and  formobject.dob.data != None:
+                        if fetchedrecord.dob != formobject.dob.data:
+                            fetchedrecord.dob = formobject.dob.data
+                            ncm = False
+
+                print("GENDER FROM FORM IS ",formobject.gender.data)
+                print("GENDER FROM FETCHED IS ", fetchedrecord.gender)
+
+                if formobject.gender.data != "" and formobject.gender.data != " " and  formobject.gender.data != None:
+                        if fetchedrecord.gender != formobject.gender.data:
+                            fetchedrecord.gender = formobject.gender.data
+                            ncm = False
+
+                print("MARITAL STATUS FROM FORM IS ",formobject.marital_status.data)
+                print("MARITAL STATUS FROM FETCHED IS ", fetchedrecord.marital_status)
+
+                if formobject.marital_status.data != "" and formobject.marital_status.data != " " and  formobject.marital_status.data != None:
+                        if fetchedrecord.marital_status != formobject.marital_status.data:
+                            fetchedrecord.marital_status = formobject.marital_status.data
+                            ncm = False
+
+                if formobject.home_phone.data != "" and formobject.home_phone.data != " " and  formobject.home_phone.data != None:
+                        if fetchedrecord.home_phone != formobject.home_phone.data:
+                            fetchedrecord.home_phone = formobject.home_phone.data
+                            ncm = False
+                        
+                if formobject.cell_phone.data != "" and formobject.cell_phone.data != " " and  formobject.cell_phone.data != None:
+                        if fetchedrecord.cell_phone != formobject.cell_phone.data:
+                            fetchedrecord.cell_phone = formobject.cell_phone.data
+                            ncm = False
+
+                if formobject.work_phone.data != "" and formobject.work_phone.data != " " and  formobject.work_phone.data != None:
+                        if fetchedrecord.work_phone != formobject.work_phone.data:
+                            fetchedrecord.work_phone = formobject.work_phone.data
+                            ncm = False
+
+                if formobject.street_address.data != "" and formobject.street_address.data != " " and  formobject.street_address.data != None:
+                        if fetchedrecord.street_address != formobject.street_address.data:
+                            fetchedrecord.street_address = formobject.street_address.data
+
+                if formobject.po_box.data != "" and formobject.po_box.data != " " and  formobject.po_box.data != None:
+                        if fetchedrecord.po_box != formobject.po_box.data:
+                            fetchedrecord.po_box = formobject.po_box.data
+                            ncm = False
+
+                if formobject.city.data != "" and formobject.city.data != " " and  formobject.city.data != None:
+                        if fetchedrecord.city != formobject.city.data:
+                            fetchedrecord.city = formobject.city.data
+                            ncm = False
+
+                if formobject.country.data != "" and formobject.country.data != " " and  formobject.country.data != None:
+                        if fetchedrecord.country != formobject.country.data:
+                            fetchedrecord.country = formobject.country.data
+                            ncm = False
+
+                db.session.commit()
+                print("UPDATED")
+
+                if ncm:
+                    return jsonify({"message": "NO CHANGES WERE MADE"}),201
+                else:
+                    return jsonify({"message": "RECORD UPDATED SUCCESSFULLY"}),200
+
+
+                    
+    except Exception as e:
+        import sys
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        print("ERROR IS ", exc_type,exc_tb.tb_lineno)
+        print("ERROR AGAIN IS ", e)
+        return jsonify({"message": "OOPS, SOMETHING WENT WRONG WHILE UPDATING THIS RECORD, PLEASE TRY AGAIN."}),401
+
+
+@app.route('/api/addrec', methods=['POST'])
+@login_required
+def addrec():
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'].lower() == current_user.username.lower():
+            if request.method == "POST":
+                formobject = AddSkiptrace()
+                personalinfo= {}
+                employerinfo={} 
+                kininfo = {}
+                strtoparse= ""
+                if  formobject.validate_on_submit():
+                    # PERSONAL INFO
+                    if formobject.first_name.data != "" and formobject.first_name.data != " " and  formobject.first_name.data != None:
+                        personalinfo['first_name'] = formobject.first_name.data
+                       
+                    if formobject.last_name.data != "" and formobject.last_name.data != " " and  formobject.last_name.data != None:
+                        personalinfo['last_name'] = formobject.last_name.data
+                      
+                    if formobject.middle_name.data != "" and formobject.middle_name.data != " " and  formobject.middle_name.data != None:
+                        personalinfo['middle_name'] = formobject.middle_name.data
+                       
+                    if formobject.nib.data != "" and formobject.nib.data != " " and  formobject.nib.data != None:
+                        personalinfo['nib'] = formobject.nib.data
+
+                    if formobject.dob.data != "" and formobject.dob.data != " " and  formobject.dob.data != None:
+                        personalinfo['dob'] = formobject.dob.data
+
+                    if formobject.gender.data != "" and formobject.gender.data != " " and formobject.gender.data != None:
+                        personalinfo['gender'] = formobject.gender.data
+
+                    if formobject.marital_status.data != "" and formobject.marital_status.data != " " and formobject.marital_status.data != None:
+                        personalinfo['marital_status'] = formobject.marital_status.data
+
+                    if formobject.home_phone.data != "" and formobject.home_phone.data != " " and formobject.home_phone.data != None:
+                        personalinfo['home_phone'] = formobject.home_phone.data
+
+                    if formobject.cell_phone.data != "" and formobject.cell_phone.data != " " and formobject.cell_phone.data != None:
+                        personalinfo['cell_phone'] = formobject.cell_phone.data
+
+                    if formobject.work_phone.data != "" and formobject.work_phone.data != " " and formobject.work_phone.data != None:
+                        personalinfo['work_phone'] = formobject.work_phone.data
+
+                    if formobject.street_address.data != "" and formobject.street_address.data != " " and formobject.street_address.data != None:
+                        personalinfo['street_address'] = formobject.street_address.data
+
+                    if formobject.po_box.data != "" and formobject.po_box.data != " " and formobject.po_box.data != None:
+                        personalinfo['po_box'] = formobject.po_box.data
+
+                    if formobject.city.data != "" and formobject.city.data != " " and formobject.city.data != None:
+                        personalinfo['city'] = formobject.city.data
+
+                    if formobject.country.data != "" and formobject.country.data != " " and formobject.country.data != None:
+                        personalinfo['country'] = formobject.country.data
+
+                    for title,value in personalinfo.items():
+                        if len(strtoparse) == 0:
+                            strtoparse = strtoparse + title + '=' + "'"+ value +"'"
+                        else:
+                            strtoparse = strtoparse + ',' + title + '='  "'"+ value +"'"
+                    
+
+                    strtoparse = "Personalinfo(" + strtoparse + ")"
+                    recobj =  eval(strtoparse)
+                    db.session.add(recobj)
+                    db.session.commit()
+                    print('added')
+               
+                    
+                    return jsonify({'message': 'Yes'}),200 
+                    # EMPlOYER INFO
+
+                return jsonify(form_errors(formobject)),200 
+    except Exception as e:
+        import sys
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        print("ERROR IS ", exc_type,exc_tb.tb_lineno)
+        print("ERROR AGAIN IS ", e)
+        return jsonify({"message": "Something went wrong, try again later."}),401
+
+
 @app.route('/api/auth/signout', methods=['GET'])
 @login_required
 def signout():
@@ -430,3 +621,16 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     app.run(debug=True,host="0.0.0.0",port="8080")
+
+    """ for title,value in personalinfo.items():
+                        if len(strtoparse) == 0:
+                            strtoparse = strtoparse + title + '=' + "'"+ value +"'"
+                        else:
+                            strtoparse = strtoparse + ',' + title + '='  "'"+ value +"'"
+                    
+
+                    strtoparse = "Personalinfo(" + strtoparse + ")"
+                    recobj =  eval(strtoparse)
+                    db.session.add(recobj)
+                    db.session.commit()
+                    print('added')"""
