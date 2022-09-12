@@ -63,6 +63,8 @@
                         bt.classList.add('regcolor');
                     }
                 });
+
+                window.scrollTo(0,0);
             },
 
             pageidreaper(){
@@ -95,7 +97,7 @@
         if (sessionStorage.getItem('isauth') == 'true'){
             this.isauth = true;
             let stat = 0;
-            
+          
             fetch(sessionStorage.getItem('queryurl'), {
                 method: 'GET',
                 headers: {
@@ -125,9 +127,7 @@
                     for(let pg = 1; pg <= this.totalpages; pg++){
                         this.pagination.push(pg);
                     }
-                    const alertcontainer =  document.querySelector('section#msg');
                     this.messages = `${data.length} RECORDS FOUND`;
-
                     if (sessionStorage.getItem('isback') != 'true'){
                         this.slicedrecords = this.records.slice(0, 10);
                         let firstchecker = setInterval(()=>{
@@ -163,10 +163,33 @@
                         sessionStorage.setItem('isback', 'false');
                     }
 
+                    let messagechecker =  setInterval(()=>{
+                        if (document.contains(document.querySelector('section#msg'))){
+                          const alertcontainer =  document.querySelector('section#msg');
+                          alertcontainer.classList.remove('alert-danger');
+                          alertcontainer.classList.add('alert-success');
+                          alertcontainer.classList.remove('hide');
+                          alertcontainer.classList.add('show');
+                          clearInterval(messagechecker);
+                        }
+                    },0);
+                
                 }
                 else if (stat == 201 || stat == 401){
                     this.isresults = true;
-                    this.messages = data.message;
+                    let messagechecker =  setInterval(()=>{
+                        if (document.contains(document.querySelector('section#msg'))){
+                          const alertcontainer =  document.querySelector('section#msg');
+                          this.messages = data.message;
+                          alertcontainer.classList.add('alert-danger');
+                          console.log('OK  OHYEAH');
+                          alertcontainer.classList.remove('alert-success');
+                          alertcontainer.classList.remove('hide');
+                          alertcontainer.classList.add('show');
+                           clearInterval(messagechecker);
+                        }
+                    },0);
+
                 }
 
                 document.querySelector("section.lightbox").style.display = "none";

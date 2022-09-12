@@ -71,7 +71,14 @@ const router = createRouter({
             component: () =>
                 import ('../views/SingleModView.vue')
         },
+        {
+            path: '/singleuser/:recid',
+            name: 'singleuser',
+            component: () =>
+                import ('../views/SingleUserView.vue')
+        },
     ]
+
 })
 
 export default router

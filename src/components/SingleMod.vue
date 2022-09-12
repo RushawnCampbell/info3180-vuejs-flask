@@ -5,7 +5,10 @@
             {{messages}}
         </section>
         <form @submit.prevent="modrecord" v-if="issingle" method="POST" id="modskip">
-            <h4>Edit the appropriate fields the save your changes</h4>
+            <section class="headingcont">
+                <h4>Edit the appropriate fields then save your changes</h4> 
+                <RouterLink  to="/adminhub" class="btn">BACK TO ADMIN HUB</RouterLink>
+            </section>
                 <h4 class="subtitle">PERSONAL INFO</h4>
                 <section id="personalinfo">
                     <div class="form-group">
@@ -213,13 +216,41 @@ export default {
 
                 if (stat == 200){
                     this.messages =  data.message;
+                    alertcontainer.classList.remove('alert-danger');
+                    alertcontainer.classList.add('alert-success');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
+
+                    fetch(`/api/getrecord?recid=${this.$route.params.recid}`, {
+                        method: 'GET',
+                        headers: {
+                            'Accept': 'application/json',
+                            'Authorization': `Bearer ${sessionStorage.getItem('token')}`
+                        }
+                    })
+                    .then((response)=>{
+                        stat =  response.status
+                        return response.json();
+                    })
+                    .then((data)=>{
+
+                        if (stat == 200){
+                            this.issingle = true;
+                            this.singlerec = data;
+                        }
+
+                    })
+
                 }
-                else if (stat == 201){
+                else if (stat == 201 || stat == 401){
                     this.messages =  data.message;
+                    alertcontainer.classList.add('alert-danger');
+                    alertcontainer.classList.remove('alert-success');
+                    alertcontainer.classList.remove('hide');
+                    alertcontainer.classList.add('show');
                 }
-                else if (stat == 401){
-                    this.messages =  data.message;
-                }
+
+                window.scrollTo(0,0);
 
             })
         },
@@ -264,6 +295,12 @@ export default {
 };
 </script>
 <style>
+
+section#msg{
+width: 60%;
+text-align: center;
+}
+
 form#modskip{
     margin: 0;
     display: flex;
@@ -297,7 +334,22 @@ section#modskiparent{
     flex-flow: column wrap;
     align-items: center;
     width: 100%;
-    margin: 5em 0em 10em 0em;
+    margin: 2em 0em 10em 0em;
     
+}
+
+section.headingcont{
+    display: flex;
+    flex-flow: row wrap;
+    justify-items: center;
+    justify-content: space-between;
+    margin: 0 0 1em 0;
+}
+
+section.headingcont a.btn{
+    width: fit-content;
+    background: #0E086D;
+    color: #fff;
+    font-weight: bold;
 }
 </style>

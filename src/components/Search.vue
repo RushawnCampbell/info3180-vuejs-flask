@@ -422,7 +422,7 @@ div.btn-group {
 }
 
 .btnsignin {
-    width: 9rem;
+    width: fit-content;
     background: #0E086D;
     color: #fff;
     font-weight: bold;
@@ -557,11 +557,6 @@ span.fieldtitle {
     font-weight: bold;
 }
 
-.btnsignin {
-    background: #0E086D;
-    height: 2em !important;
-    color: #fff;
-}
 
 button#searchagain {
     width: fit-content;

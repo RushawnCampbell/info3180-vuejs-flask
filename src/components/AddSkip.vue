@@ -14,7 +14,7 @@
                     </div>
                     <div class="form-group">
                         <label for="middlename">Middle Name</label><br>
-                        <input type="password" class="form-control" id="middlename" placeholder="eg. Frederick"  name="middle_name" >
+                        <input type="text" class="form-control" id="middlename" placeholder="eg. Frederick"  name="middle_name" >
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name</label><br>
@@ -22,7 +22,7 @@
                     </div>
                     <div class="form-group">
                         <label for="nib">N.I.B#</label><br>
-                        <input type="password" class="form-control" id="nib" placeholder="eg. 12345678" name="nib" >
+                        <input type="text" class="form-control" id="nib" placeholder="eg. 12345678" name="nib" >
                     </div>
                     <div class="form-group">
                         <label for="dob">D.O.B</label><br>
@@ -30,12 +30,12 @@
                     </div>
                     <div class="form-group">
                         <label for="marital_status">Marital Status</label><br>
-                        <input type="password" class="form-control" id="marital_status"  name="marital_status" >
+                        <input type="text" class="form-control" id="marital_status"  name="marital_status" >
                     </div>
 
                     <div class="form-group">
                         <label for="gender">Gender</label><br>
-                        <input type="text" class="form-control" id="gender"  name="gender" :value=singlerec.gender>
+                        <input type="text" class="form-control" id="gender"  name="gender">
                     </div>
                     
                     <div class="form-group">
@@ -44,11 +44,11 @@
                     </div>
                     <div class="form-group">
                         <label for="cellphone">Cell Phone</label><br>
-                        <input type="password" class="form-control" id="cellphone"  placeholder="242-XXX-XXXX" name="cell_phone" >
+                        <input type="text" class="form-control" id="cellphone"  placeholder="242-XXX-XXXX" name="cell_phone" >
                     </div>
                     <div class="form-group">
                         <label for="workphone">Work Phone</label><br>
-                        <input type="password" class="form-control" id="workphone" placeholder="242-XXX-XXXX" name="work_phone" >
+                        <input type="text" class="form-control" id="workphone" placeholder="242-XXX-XXXX" name="work_phone" >
                     </div>
                     <div class="form-group">
                         <label for="streetaddress">Street Address</label>
@@ -56,11 +56,11 @@
                     </div>
                     <div class="form-group">
                         <label for="city">City</label><br>
-                        <input type="password" class="form-control" id="city" placeholder="eg. Nassau"  name="city" >
+                        <input type="text" class="form-control" id="city" placeholder="eg. Nassau"  name="city" >
                     </div>
                     <div class="form-group">
                         <label for="country">Country</label><br>
-                        <input type="password" class="form-control" id="country" placeholder="eg. Bahamas"  name="country" >
+                        <input type="text" class="form-control" id="country" placeholder="eg. Bahamas"  name="country" >
                     </div>
                  
                 </section>
@@ -73,7 +73,7 @@
                     </div>
                     <div class="form-group">
                         <label for="middlename">Middle Name</label><br>
-                        <input type="password" class="form-control" id="middlename"  name="emp_middle_name" >
+                        <input type="text" class="form-control" id="middlename"  name="emp_middle_name" >
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name</label><br>
@@ -82,7 +82,7 @@
                    
                     <div class="form-group">
                         <label for="workphone">Phone</label><br>
-                        <input type="password" class="form-control" id="workphone"  name="emp_phone" >
+                        <input type="text" class="form-control" id="workphone"  name="emp_phone" >
                     </div>
             
                     <div class="form-group">
@@ -91,11 +91,11 @@
                     </div>
                     <div class="form-group">
                         <label for="city">City</label><br>
-                        <input type="password" class="form-control" id="city"  name="emp_city" >
+                        <input type="text" class="form-control" id="city"  name="emp_city" >
                     </div>
                     <div class="form-group">
                         <label for="country">Country</label><br>
-                        <input type="password" class="form-control" id="country"  name="emp_country" >
+                        <input type="text" class="form-control" id="country"  name="emp_country" >
                     </div>
                  
                 </section>
@@ -109,7 +109,7 @@
                     </div>
                     <div class="form-group">
                         <label for="middlename">Middle Name</label><br>
-                        <input type="password" class="form-control" id="middlename"  name="kin_middle_name" >
+                        <input type="text" class="form-control" id="middlename"  name="kin_middle_name" >
                     </div>
                     <div class="form-group">
                         <label for="lastname">Last Name</label><br>
@@ -117,15 +117,15 @@
                     </div>
                     <div class="form-group">
                         <label for="homephone">Home Phone</label><br>
-                        <input type="password" class="form-control" id="homephone"  name="kin_home_phone" >
+                        <input type="text" class="form-control" id="homephone"  name="kin_home_phone" >
                     </div>
                     <div class="form-group">
                         <label for="cellphone">Cell Phone</label><br>
-                        <input type="password" class="form-control" id="cellphone"  name="kin_cell_phone" >
+                        <input type="text" class="form-control" id="cellphone"  name="kin_cell_phone" >
                     </div>
                     <div class="form-group">
                         <label for="workphone">Work Phone</label><br>
-                        <input type="password" class="form-control" id="workphone"  name="kin_work_phone" >
+                        <input type="text" class="form-control" id="workphone"  name="kin_work_phone" >
                     </div>
                     <div class="form-group">
                         <label for="streetaddress">Street Address</label>
@@ -133,11 +133,11 @@
                     </div>
                     <div class="form-group">
                         <label for="city">City</label><br>
-                        <input type="password" class="form-control" id="city"  name="kin_city" >
+                        <input type="text" class="form-control" id="city"  name="kin_city" >
                     </div>
                     <div class="form-group">
                         <label for="country">Country</label><br>
-                        <input type="password" class="form-control" id="country"  name="kin_country" >
+                        <input type="text" class="form-control" id="country"  name="kin_country" >
                     </div>
 
                     <div class="form-group">
@@ -146,7 +146,7 @@
                     </div>
                     <div class="form-group">
                         <label for="middlename">Employer Middle Name</label><br>
-                        <input type="password" class="form-control" id="middlename"  name="kin_emp_middle_name" >
+                        <input type="text" class="form-control" id="middlename"  name="kin_emp_middle_name" >
                     </div>
                     <div class="form-group">
                         <label for="lastname">Employer Last Name</label><br>
@@ -155,7 +155,7 @@
                    
                     <div class="form-group">
                         <label for="workphone">Employer Phone</label><br>
-                        <input type="password" class="form-control" id="workphone"  name="kin_emp_phone" >
+                        <input type="text" class="form-control" id="workphone"  name="kin_emp_phone" >
                     </div>
             
                     <div class="form-group">
@@ -164,11 +164,11 @@
                     </div>
                     <div class="form-group">
                         <label for="city">Employer City</label><br>
-                        <input type="password" class="form-control" id="city"  name="kin_emp_city" >
+                        <input type="text" class="form-control" id="city"  name="kin_emp_city" >
                     </div>
                     <div class="form-group">
                         <label for="country">Employer Country</label><br>
-                        <input type="password" class="form-control" id="country"  name="kin_emp_country" >
+                        <input type="text" class="form-control" id="country"  name="kin_emp_country" >
                     </div>
                  
                 </section>

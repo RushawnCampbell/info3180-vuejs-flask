@@ -4,7 +4,7 @@ from flask_login import login_user, logout_user, current_user, login_required
 from werkzeug.security import check_password_hash
 
 from app.models import Users, Personalinfo, Employerinfo, Kininfo
-from app.forms import SigninForm, AddSkiptrace, ModSkiptrace
+from app.forms import SigninForm, AddSkiptrace, ModSkiptrace, ModUser
 
 
 from flask_wtf.csrf import generate_csrf
@@ -111,30 +111,30 @@ def quicksearch():
                 searchedrecords =[]
 
                 for entry in  queryarray:
-                    tempsearch= Personalinfo.query.filter(Personalinfo.first_name == entry.lower() or Personalinfo.first_name == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.first_name == entry.lower() ).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
 
-                    tempsearch= Personalinfo.query.filter(Personalinfo.middle_name == entry.lower() or Personalinfo.middle_name == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.middle_name == entry.lower() ).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
 
-                    tempsearch= Personalinfo.query.filter(Personalinfo.last_name == entry.lower() or Personalinfo.last_name == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.last_name == entry.lower() ).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
 
-                    tempsearch= Personalinfo.query.filter(Personalinfo.nib == entry.lower() or Personalinfo.nib == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.nib == entry.lower() ).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
 
-                    tempsearch= Personalinfo.query.filter(Personalinfo.dob == entry.lower() or Personalinfo.dob == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.dob == entry.lower() ).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
 
-                    tempsearch= Personalinfo.query.filter(Personalinfo.gender == entry.lower() or Personalinfo.gender == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.gender == entry.lower()).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
-                    tempsearch= Personalinfo.query.filter(Personalinfo.marital_status== entry.lower() or Personalinfo.marital_status == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.marital_status== entry.lower()).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
 
@@ -152,14 +152,14 @@ def quicksearch():
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
                     
-                    tempsearch= Personalinfo.query.filter(Personalinfo.po_box == entry.lower() or Personalinfo.po_box == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.po_box == entry.lower() ).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
-                    tempsearch= Personalinfo.query.filter(Personalinfo.city == entry.lower() or Personalinfo.city == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.city == entry.lower() ).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
 
-                    tempsearch= Personalinfo.query.filter(Personalinfo.country == entry.lower() or Personalinfo.country == entry.upper()).distinct().all()
+                    tempsearch= Personalinfo.query.filter(Personalinfo.country == entry.lower()).distinct().all()
                     if tempsearch not in searchedrecords:
                         searchedrecords.append(tempsearch)
 
@@ -222,7 +222,7 @@ def advancesearch():
 
                 if len(params) == 1:
                     for par in params:
-                        if par[1] == "" or par[1]== " " or par[1] is  None:
+                        if par[1] == "" or par[1] == " " or par[1] is  None:
                             return jsonify({"message": "You didn't search for anything."}),201 
                         else:
                             if par[0] == "firstname":
@@ -351,6 +351,52 @@ def getrecord():
         return jsonify({"message": "Something went wrong, try again later."}),401
 
 
+
+@app.route('/api/getusers', methods=['GET'])
+@login_required
+def getuser():
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'].lower() == current_user.username.lower():
+            if request.method == 'GET':
+                param = request.args
+                single = param.get('recid')
+
+                if single is not None:
+                    fetchedrecord = Users.query.filter(Users.user_id == single).distinct().first()
+                    return jsonify({
+                        "first_name" : fetchedrecord.first_name,
+                        "last_name" : fetchedrecord.last_name,
+                        "username": fetchedrecord.username,
+                        "role": fetchedrecord.role,
+                        "email": fetchedrecord.email,
+                    })
+                else:
+                    resultantrecords =  []
+                    fetchedrecords = db.session.query(Users).all()
+                    for rec in fetchedrecords:
+                        resultantrecords.append({
+                        "user_id": rec.user_id,
+                        "first_name" : rec.first_name,
+                        "last_name" : rec.last_name,
+                        "username": rec.username,
+                        "role": rec.role,
+                        "email": rec.email,
+                        "date_joined": rec.date_joined
+                    })
+
+                    return jsonify(resultantrecords), 200
+    except Exception as e:
+        import sys
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        print("ERROR IS ", exc_type,exc_tb.tb_lineno)
+        print("ERROR AGAIN IS ", e)
+        return jsonify({"message": "OOPS, SOMETHING WENT WRONG WHILE UPDATING THIS RECORD, PLEASE TRY AGAIN."}),401
+
+
 @app.route('/api/modrecord', methods=['POST'])
 @login_required
 def modrec():
@@ -390,16 +436,11 @@ def modrec():
                             fetchedrecord.dob = formobject.dob.data
                             ncm = False
 
-                print("GENDER FROM FORM IS ",formobject.gender.data)
-                print("GENDER FROM FETCHED IS ", fetchedrecord.gender)
 
                 if formobject.gender.data != "" and formobject.gender.data != " " and  formobject.gender.data != None:
                         if fetchedrecord.gender != formobject.gender.data:
                             fetchedrecord.gender = formobject.gender.data
                             ncm = False
-
-                print("MARITAL STATUS FROM FORM IS ",formobject.marital_status.data)
-                print("MARITAL STATUS FROM FETCHED IS ", fetchedrecord.marital_status)
 
                 if formobject.marital_status.data != "" and formobject.marital_status.data != " " and  formobject.marital_status.data != None:
                         if fetchedrecord.marital_status != formobject.marital_status.data:
@@ -441,7 +482,6 @@ def modrec():
                             ncm = False
 
                 db.session.commit()
-                print("UPDATED")
 
                 if ncm:
                     return jsonify({"message": "NO CHANGES WERE MADE"}),201
@@ -456,6 +496,64 @@ def modrec():
         print("ERROR IS ", exc_type,exc_tb.tb_lineno)
         print("ERROR AGAIN IS ", e)
         return jsonify({"message": "OOPS, SOMETHING WENT WRONG WHILE UPDATING THIS RECORD, PLEASE TRY AGAIN."}),401
+
+
+@app.route('/api/moduser', methods=['POST'])
+@login_required
+def moduser():
+    user_token= request.headers['Authorization'].split(' ')[1]
+    if not user_token:
+        return jsonify({"message": "Access token is missing or invalid"}),401
+    try:
+        decoded = jwt.decode(user_token, app.config['SECRET_KEY'], algorithms=['HS256'])
+        if decoded['sub'].lower() == current_user.username.lower():
+            if request.method == 'POST':
+                formobject = ModUser()
+                param = request.args
+                single = param.get('recid')
+                ncm = True
+                fetchedrecord = Users.query.filter(Users.user_id == single).distinct().first()
+                if formobject.first_name.data != "" and formobject.first_name.data != " " and  formobject.first_name.data != None:
+                        if fetchedrecord.first_name != formobject.first_name.data:
+                            fetchedrecord.first_name = formobject.first_name.data
+                            ncm = False
+
+                if formobject.last_name.data != "" and formobject.last_name.data != " " and  formobject.last_name.data != None:
+                        if fetchedrecord.last_name != formobject.last_name.data:
+                            fetchedrecord.last_name = formobject.last_name.data
+                            ncm = False
+
+                if formobject.username.data != "" and formobject.username.data != " " and  formobject.username.data != None:
+                        if fetchedrecord.username != formobject.username.data:
+                            fetchedrecord.username = formobject.username.data
+                            ncm = False
+
+                print("ROLE CAPTURED IS", formobject.role.data)
+                if formobject.role.data != "" and formobject.role.data != " " and  formobject.role.data != None:
+                        if fetchedrecord.role != formobject.role.data:
+                            fetchedrecord.role = formobject.role.data
+                            ncm = False
+
+                if formobject.email.data != "" and formobject.email.data != " " and  formobject.email.data != None:
+                        if fetchedrecord.email != formobject.email.data:
+                            fetchedrecord.email = formobject.email.data
+                            ncm = False
+
+                db.session.commit()
+
+                if ncm:
+                    return jsonify({"message": "NO CHANGES WERE MADE"}),201
+                else:
+                    return jsonify({"message": "USER PROFILE UPDATED SUCCESSFULLY"}),200
+
+    except Exception as e:
+        import sys
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        print("ERROR IS ", exc_type,exc_tb.tb_lineno)
+        print("ERROR AGAIN IS ", e)
+        return jsonify({"message": "OOPS, SOMETHING WENT WRONG WHILE UPDATING THIS USER PROFILE, PLEASE TRY AGAIN."}),401
+
+
 
 
 @app.route('/api/addrec', methods=['POST'])
@@ -621,16 +719,3 @@ def page_not_found(error):
 
 if __name__ == '__main__':
     app.run(debug=True,host="0.0.0.0",port="8080")
-
-    """ for title,value in personalinfo.items():
-                        if len(strtoparse) == 0:
-                            strtoparse = strtoparse + title + '=' + "'"+ value +"'"
-                        else:
-                            strtoparse = strtoparse + ',' + title + '='  "'"+ value +"'"
-                    
-
-                    strtoparse = "Personalinfo(" + strtoparse + ")"
-                    recobj =  eval(strtoparse)
-                    db.session.add(recobj)
-                    db.session.commit()
-                    print('added')"""

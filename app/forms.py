@@ -94,6 +94,15 @@ class ModSkiptrace(FlaskForm):
     kin_emp_city= StringField('City')
     kin_emp_country= StringField('Country')
 
+
+class ModUser(FlaskForm):
+    first_name= StringField('First Name')
+    last_name= StringField('Last Name')
+    role= SelectField(label='Role', choices=[('Skiptracer', 'Skiptracer'), ('Admin', 'Admin')])
+    username = StringField('Last Name')
+    email = EmailField("Email Address", validators=[DataRequired(), Email()])
+
+
 """class CarForm(FlaskForm):
     make = StringField('Make', validators=[InputRequired()])
     model = StringField('Model', validators=[InputRequired()])
